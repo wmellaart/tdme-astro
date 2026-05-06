@@ -42,7 +42,7 @@ const Hero = () => {
             animate="visible"
             custom={1}
           >
-            Strategisch advies voor marketing, management en groei.
+            Strategisch advies & actie: marketing, management en groei.
           </motion.p>
         </div>
       </section>
