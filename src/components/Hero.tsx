@@ -33,7 +33,7 @@ const Hero = () => {
             animate="visible"
             custom={0}
           >
-            Helderheid in complexiteit.
+            Helderheid in complexiteit
           </motion.h1>
           <motion.p
             className="mt-6 text-lg md:text-xl text-white/85 max-w-xl mx-auto leading-relaxed font-light"
@@ -42,7 +42,7 @@ const Hero = () => {
             animate="visible"
             custom={1}
           >
-            Strategisch advies & actie: marketing, management en groei.
+            Strategisch advies & actie: marketing, management en groei
           </motion.p>
         </div>
       </section>
