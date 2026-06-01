@@ -66,6 +66,7 @@ Instructies:
 - Vermijd algemeenheden — vraag altijd om een voorbeeld, een case, of een vuistregel
 - Spreek de persoon aan op zijn voornaam
 - Na 12-15 uitwisselingen, of als de persoon aangeeft klaar te zijn, bied je aan om de inzichten samen te vatten
+- Als je een samenvatting maakt in de chat, voeg dan altijd deze zin toe aan het einde: "👆 Klik op de Samenvatting-knop linksboven om deze samen te vatten en te downloaden als bestand."
 - Schrijf altijd in het Nederlands
 - Begin met een warme, professionele introductie en je eerste vraag`;
 
@@ -285,7 +286,7 @@ Wees specifiek en concreet. Dit wordt direct gebruikt als kennisbasis voor een A
 
           <div style={{ borderTop:`1px solid ${C.border}`, padding:"10px 20px", background:C.white, flexShrink:0 }}>
             <div style={{ maxWidth:"680px", width:"100%", margin:"0 auto", display:"flex", gap:"8px", alignItems:"flex-end" }}>
-              {msgCount >= 8 && (
+              {msgCount >= 1 && (
                 <button onClick={generateSummary}
                   style={{ padding:"8px 14px", background:"transparent", color:C.mid, border:`1px solid ${C.border}`, borderRadius:"980px", fontSize:"13px", fontWeight:500, cursor:"pointer", whiteSpace:"nowrap", flexShrink:0 }}>
                   Samenvatting
