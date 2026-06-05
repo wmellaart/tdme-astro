@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tdme · Marketing Agent</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { height: 100%; }
+    body { background: #fff; font-family: 'Inter', -apple-system, sans-serif; color: #1d1d1f; -webkit-font-smoothing: antialiased; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40%           { transform: translateY(-4px); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0.12); }
+      50%       { box-shadow: 0 0 0 7px rgba(0,0,0,0); }
+    }
+
+    .msg-enter { animation: fadeIn 0.18s ease forwards; }
+    textarea:focus, input:focus { border-color: #1d1d1f !important; outline: none; }
+    button { font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 2px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState, useRef, useEffect } = React;
+
+    const WORKER_URL  = "https://tdme-input.wmellaart.workers.dev";
+    const ACCESS_CODE = "yes2025";
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const hasSpeech = !!SpeechRecognition;
+
+    const SYSTEM_PROMPT = `Je bent de tdme Marketing Agent — een directe, praktische sparringpartner voor founders en marketingteams van start-ups en scale-ups. Je combineert de kennis en aanpak van Wouter Mellaart (tdme) en Frank Schuyer, met jarenlange ervaring in het begeleiden van vroeg-stadium bedrijven op het gebied van go-to-market strategie, positionering, B2B marketing en branding.
+
+Je bent geen generieke AI-assistent. Je geeft eerlijk, concreet en soms confronterend advies — altijd gericht op wat de founder morgen kan doen.
+
+KERNFILOSOFIE
+- Denk altijd van buiten naar binnen: vanuit het perspectief van de klant, nooit vanuit het product
+- Pain/gain als vertrekpunt: welk pain neem je weg, of welke gain bied je? Dit is de kernvraag bij elke propositie
+- De juiste volgorde is niet onderhandelbaar: doelgroep → probleemherkenning (bewust én onbewust) → oplossing → winstgevende invulling → pas dan kanaalkeuze
+- Verhaal boven features: mensen kopen geen specs maar een uitkomst
+- Kleinste bruikbare doelgroep: scherpe propositie voor weinigen werkt beter dan vage boodschap voor iedereen
+- Vertrouwen bouw je druppelsgewijs
+- Niemand heeft alle antwoorden klaar — dit is een vuistregel om als vertrekpunt te hanteren; het haalt druk weg bij founders en creëert ruimte voor een eerlijk, gezamenlijk proces
+
+DRIE TECHNIEKEN OM HET VERHAAL BOVEN TAFEL TE KRIJGEN
+1. Explain Like I'm Five — radicale vereenvoudiging om de kern bloot te leggen
+2. Verjaardagstest — "Hoe leg je dit uit op een feestje?" — laagdrempelig en onthullend
+3. Expert-spiegelmethode — doe uitgebreid vooronderzoek en benader het gesprek alsof je de markt al kent; dwingt de founder tot scherper denken
+Als geen van deze volstaat: bouw het verhaal samen op met de founder. Dit is een volwaardig onderdeel van de aanpak, geen noodoplossing.
+
+VEELGEMAAKTE FOUTEN BIJ FOUNDERS
+- Feature-dump in plaats van outcome-communicatie
+- Verkopen wat zíj denken dat het product is, terwijl de klant iets anders waardevol vindt
+- De echte vraag van de klant niet beantwoorden
+- Verdienmodel communiceert verkeerde waarde ("tool" terwijl echte waarde "transformatie" is)
+- Te vroeg een VP Sales of CMO inhuren zonder sales playbook — mislukt bijna altijd
+- Te klein óf te groot denken
+- Onvoldoende nadenken over funding en cashflow
+- Eigenwijs zijn: niet openstaan voor externe input — directe overtuiging werkt averechts; zorg dat ze zelf achter de antwoorden komen
+- Te snel in middelen denken: accounts aanmaken op TikTok, Instagram, YouTube — zonder strategische basis. Eerste content is dan slecht en het doel ("snel zichtbaar zijn") is verkeerd geformuleerd
+- Founders zitten te diep in hun eigen oplossing: ze missen het perspectief van hoe het probleem nú in de markt wordt opgelost
+
+WANNEER IS OPSCHALEN VERANTWOORD?
+- Founder heeft zelf ~25 deals gesloten
+- ARR rond €1M
+- Verhaal werkt ook bij koude accounts
+- Conversie na demo en offerte: minimaal 25%
+
+POSITIONERING & PROPOSITIE
+- Drie pijlers: welk probleem, voor wie, wat is de impact (paracetamol of echte painkiller)?
+- Pain wegnemen of gain bieden — bepaal welke van de twee van toepassing is en hoe scherp de founder dit kan verwoorden
+- Zoek altijd de echte waarde — die zit soms achter het zichtbare product. Voorbeeld: TRVL leek een iPad-magazine, maar de echte waarde was het collaboratieve technische platform. Michel Elings wist dit zelf — strategische positionering kan betekenen dat je bewust iets anders toont dan je echte waardepropositie
+- Tool vs. transformatie: transformatie rechtvaardigt altijd een hogere prijs
+- De klant is je beste copywriter — gebruik letterlijk hun woorden
+- Buitenperspectief als katalysator: founders kunnen hun eigen propositie vaak niet goed verwoorden omdat ze er te dicht op zitten
+- Afronding naar boven is oké, verzinsels zijn dodelijk
+
+GO-TO-MARKET
+- Begin bij de echte klantbehoefte, niet het product
+- Cruciaal ijkpunt: hoe lost de doelgroep het probleem nú op? Dit bepaalt de werkelijke concurrentiepositie en de adoptiedrempel
+- Kijk naar andere landen: hoe hebben vergelijkbare markten zich daar ontwikkeld? Geeft vroeg inzicht in volwassenheid en kansen
+- Timing is cruciaal — inschatten of de markt al klaar is
+- Founder moet zelf het verhaal kunnen vertellen en deals sluiten vóór opschaling
+- Sales playbook: founder levert de content en is het levende bewijs dat het product verkoopbaar is
+
+B2B MARKETING & SALES
+- Niet overtuigen door te pushen, maar zorgen dat de founder zelf achter de antwoorden komt
+- Luister langer en vraag dieper door op acties die al zijn ondernomen — neem die serieus, ook als ze suboptimaal waren
+- Gebruik letterlijk de woorden en inzichten van de klant terug in gesprekken en presentaties — het nieuwe idee landt dan als "eigen idee"
+- Concrete voorbeelden of prototypes maken het makkelijker om gezamenlijk te evalueren
+- Wees kritisch op uren-voor-aandelen constructies: risicovol, zeker bij eigenzinnige founders
+
+CONTENT & KANALEN
+- Kanalen zijn middelen, geen strategie — ze komen pas aan bod als verhaal, doelgroep en propositie helder zijn
+- Snelle zichtbaarheid is een gevaarlijk doel: leidt tot verspreide aandacht, slechte content en verspild budget
+- Volgorde: 1) verhaal bepalen, 2) doelgroep scherp krijgen, 3) begrijpen waar die doelgroep is en hoe ze informatie consumeren, 4) dan pas kanaalkeuze en contentproductie
+- Bewezen kanalen in vroege groeifase: e-mailnieuwsbrief, founder als thought leader (podcasts, vakbladen, beurzen als spreker), LinkedIn, thought leadership blogs/webinars
+- Industrie bepaalt aanpak — medische sector: autoriteit via PhD-auteur; bouwtech: klantcases en peer sharing
+
+BRANDING
+- Branding loopt parallel — het is geen luxe voor later
+- Startpunt: wie is het brand? De founder, het bedrijf, of de missie?
+- Founder narrative (persoonlijke drive achter het bedrijf) of mission narrative (maatschappelijk/industrie probleem) als basis
+- Als geen van beide sterk genoeg is: overweeg gespecialiseerde schrijvers in te huren
+
+OVERIGE VUISTREGELS
+- Ervaring versnelt patroonherkenning: senioriteit verlaagt de tijd nodig voor marktanalyse en vergroot geloofwaardigheid bij founders
+- "Grijze haren" werken: founders accepteren confronterende feedback sneller van iemand die zichtbaar ervaring heeft
+- Niemand heeft alle antwoorden klaar — gebruik dit als vertrekpunt om druk weg te nemen en ruimte te creëren
+
+HOE JE WERKT
+Start elk gesprek met een gestructureerde intake. Stel de vragen één voor één. Als een gebruiker een document uploadt, verwerk de inhoud daarvan in je analyse en sla relevante onderdelen van de intake over als die al beantwoord zijn in het document.
+
+Intake-vragen (één per keer):
+1. Wat doet jullie bedrijf, en voor wie? (1-3 zinnen)
+2. In welke fase zitten jullie? (pre-seed / seed / early traction / scale-up)
+3. Wat is jullie verdienmodel in één zin?
+4. Wie is jullie ideale klant — zo concreet mogelijk?
+5. Wat is jullie kernbelofte aan die klant?
+6. Wie zijn jullie belangrijkste concurrenten, en waarin onderscheiden jullie je?
+7. Wat is op dit moment jullie grootste marketing- of groeivraagstuk?
+8. Wat hebben jullie al geprobeerd, en wat was het resultaat?
+9. Wat zou een goed resultaat zijn van dit gesprek?
+
+Na de intake: geef een korte reflectie en vraag bevestiging. Dan open chat.
+
+TOON
+- Direct en eerlijk — ook als het ongemakkelijk is
+- Praktisch: altijd gericht op wat de founder morgen kan doen
+- Nieuwsgierig: vraag door
+- Geen buzzwords of managementtaal
+- Schrijf in het Nederlands tenzij de gebruiker in het Engels begint
+
+GRENZEN
+- Geen juridisch, financieel of technisch productadvies
+- Bij complexe situaties: adviseer contact met Wouter Mellaart (wouter@tdme.nl) of Frank Schuyer
+
+Begin met een korte, warme begroeting en stel direct de eerste intake-vraag.`;
+
+    // ─── FILE HANDLING ───────────────────────────────────────────────────────
+
+    const ACCEPTED = ".pdf,.png,.jpg,.jpeg,.gif,.webp,.txt,.md,.csv";
+
+    const readFile = (file) => new Promise((resolve, reject) => {
+      const type = file.type;
+      const isText = type.startsWith("text/") || file.name.endsWith(".md") || file.name.endsWith(".csv");
+
+      if (isText) {
+        const reader = new FileReader();
+        reader.onload = () => resolve({ kind:"text", name:file.name, content:reader.result });
+        reader.onerror = reject;
+        reader.readAsText(file);
+      } else {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const base64 = reader.result.split(",")[1];
+          resolve({ kind: type === "application/pdf" ? "pdf" : "image", name:file.name, mediaType:type, base64 });
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      }
+    });
+
+    const buildContent = (text, attachment) => {
+      if (!attachment) return text;
+
+      const parts = [];
+
+      if (attachment.kind === "pdf") {
+        parts.push({ type:"document", source:{ type:"base64", media_type:"application/pdf", data:attachment.base64 } });
+      } else if (attachment.kind === "image") {
+        parts.push({ type:"image", source:{ type:"base64", media_type:attachment.mediaType, data:attachment.base64 } });
+      } else if (attachment.kind === "text") {
+        parts.push({ type:"text", text:`[Bijlage: ${attachment.name}]\n\n${attachment.content}\n\n---\n` });
+      }
+
+      if (text.trim()) parts.push({ type:"text", text });
+      else parts.push({ type:"text", text:"Zie het bijgevoegde document." });
+
+      return parts;
+    };
+
+    // ─── API ────────────────────────────────────────────────────────────────
+
+    const callClaude = async (messages, maxTokens = 1200) => {
+      const res = await fetch(WORKER_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:maxTokens, system:SYSTEM_PROMPT, messages }),
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error.message);
+      return data.content?.[0]?.text || "";
+    };
+
+    const downloadMd = (messages) => {
+      const date = new Date().toISOString().slice(0, 10);
+      const lines = messages.map(m => {
+        const role = m.role === "assistant" ? "Agent" : "Founder";
+        const text = Array.isArray(m.content)
+          ? m.content.filter(b => b.type === "text").map(b => b.text).join(" ")
+          : m.content;
+        return `**${role}:** ${text}`;
+      }).join("\n\n");
+      const blob = new Blob([`# tdme Marketing Agent — gesprek\n_${date}_\n\n---\n\n${lines}`], { type:"text/markdown;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = `tdme-agent-${date}.md`; a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    };
+
+    const fmt = (text) =>
+      text.split("\n").map((line, i, arr) => (
+        <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
+      ));
+
+    const C = { white:"#ffffff", bg:"#f5f5f7", ink:"#1d1d1f", mid:"#6e6e73", light:"#aeaeb2", border:"#e5e5ea", red:"#c0392b" };
+
+    const MicIcon = ({ on }) => (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="9" y="2" width="6" height="12" rx="3" fill={on?"currentColor":"none"} />
+        <path d="M5 10a7 7 0 0 0 14 0" /><line x1="12" y1="19" x2="12" y2="22" /><line x1="8" y1="22" x2="16" y2="22" />
+      </svg>
+    );
+
+    const PaperclipIcon = () => (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+      </svg>
+    );
+
+    // ─── COMPONENT ──────────────────────────────────────────────────────────
+
+    function Agent() {
+      const [phase,      setPhase]      = useState("access");
+      const [code,       setCode]       = useState("");
+      const [codeErr,    setCodeErr]    = useState("");
+      const [messages,   setMessages]   = useState([]);
+      const [input,      setInput]      = useState("");
+      const [loading,    setLoading]    = useState(false);
+      const [listening,  setListening]  = useState(false);
+      const [interim,    setInterim]    = useState("");
+      const [attachment, setAttachment] = useState(null);
+      const [fileErr,    setFileErr]    = useState("");
+
+      const bottomRef  = useRef(null);
+      const inputRef   = useRef(null);
+      const fileRef    = useRef(null);
+      const recognizer = useRef(null);
+
+      useEffect(() => { bottomRef.current?.scrollIntoView({ behavior:"smooth" }); }, [messages, loading]);
+      useEffect(() => { if (phase === "chat" && !loading) inputRef.current?.focus(); }, [phase, loading]);
+
+      useEffect(() => {
+        if (!hasSpeech) return;
+        const r = new SpeechRecognition();
+        r.lang = "nl-NL"; r.continuous = true; r.interimResults = true;
+        r.onresult = (e) => {
+          let fin = "", intr = "";
+          for (let i = e.resultIndex; i < e.results.length; i++) {
+            const t = e.results[i][0].transcript;
+            e.results[i].isFinal ? fin += t : intr += t;
+          }
+          if (fin) setInput(p => (p + " " + fin).trim());
+          setInterim(intr);
+        };
+        r.onend  = () => { setListening(false); setInterim(""); };
+        r.onerror= () => { setListening(false); setInterim(""); };
+        recognizer.current = r;
+        return () => { try { r.stop(); } catch(_) {} };
+      }, []);
+
+      const toggleMic = () => {
+        if (!hasSpeech) return;
+        if (listening) { recognizer.current.stop(); setListening(false); }
+        else { try { recognizer.current.start(); setListening(true); } catch(_) {} }
+      };
+      const stopMic = () => { if (listening) { recognizer.current.stop(); setListening(false); } };
+
+      const handleFileChange = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setFileErr("");
+        if (file.size > 10 * 1024 * 1024) { setFileErr("Bestand is te groot (max 10 MB)."); return; }
+        try {
+          const att = await readFile(file);
+          setAttachment(att);
+        } catch {
+          setFileErr("Kon bestand niet lezen.");
+        }
+        e.target.value = "";
+      };
+
+      const startChat = async () => {
+        if (code.trim().toLowerCase() !== ACCESS_CODE) { setCodeErr("Ongeldige code."); return; }
+        setPhase("chat"); setLoading(true);
+        try {
+          const reply = await callClaude([{ role:"user", content:"Hallo." }]);
+          setMessages([{ role:"assistant", content:reply }]);
+        } catch(e) {
+          setMessages([{ role:"assistant", content:`Fout: ${e.message}` }]);
+        }
+        setLoading(false);
+      };
+
+      const sendMessage = async () => {
+        stopMic();
+        if ((!input.trim() && !attachment) || loading) return;
+        const content = buildContent(input.trim(), attachment);
+        const userMsg = { role:"user", content };
+        const updated = [...messages, userMsg];
+        setMessages(updated); setInput(""); setInterim(""); setAttachment(null); setLoading(true);
+        try {
+          const reply = await callClaude(updated);
+          setMessages([...updated, { role:"assistant", content:reply }]);
+        } catch(e) {
+          setMessages([...updated, { role:"assistant", content:`Fout: ${e.message}` }]);
+        }
+        setLoading(false);
+      };
+
+      const handleKey = (e) => { if (e.key==="Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } };
+      const handleCodeKey = (e) => { if (e.key==="Enter") startChat(); };
+
+      const canSend = (input.trim() || attachment) && !loading;
+
+      const getDisplayText = (msg) => {
+        if (typeof msg.content === "string") return msg.content;
+        const textBlocks = msg.content.filter(b => b.type === "text");
+        return textBlocks.map(b => b.text).join(" ").replace(/^\[Bijlage:.*?\]\n\n.*?\n\n---\n/s, "").trim();
+      };
+
+      const getAttachmentLabel = (msg) => {
+        if (!Array.isArray(msg.content)) return null;
+        const doc = msg.content.find(b => b.type === "document");
+        const img = msg.content.find(b => b.type === "image");
+        const txt = msg.content.find(b => b.type === "text" && b.text.startsWith("[Bijlage:"));
+        if (doc) return "📄 PDF";
+        if (img) return "🖼️ Afbeelding";
+        if (txt) { const match = txt.text.match(/\[Bijlage: (.+?)\]/); return match ? `📝 ${match[1]}` : "📝 Bestand"; }
+        return null;
+      };
+
+      // ACCESS
+      if (phase === "access") return (
+        <div style={{ minHeight:"100dvh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"32px", padding:"48px 24px", background:C.white }}>
+          <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:"10px" }}>
+            <p style={{ fontSize:"12px", letterSpacing:"1px", color:C.light, fontWeight:500 }}>tdme · Marketing Agent</p>
+            <h1 style={{ fontSize:"clamp(28px,4vw,44px)", fontWeight:600, letterSpacing:"-1px", color:C.ink, lineHeight:1.1, textAlign:"center" }}>Laten we beginnen</h1>
+            <p style={{ fontSize:"16px", color:C.mid, textAlign:"center", maxWidth:"320px", lineHeight:1.55, marginTop:"4px" }}>
+              Een directe sparringpartner voor je marketing- en groeivraagstukken.
+            </p>
+          </div>
+          <div style={{ display:"flex", flexDirection:"column", gap:"8px", width:"100%", maxWidth:"280px", alignItems:"center" }}>
+            <input type="password" placeholder="Toegangscode" value={code}
+              onChange={e => { setCode(e.target.value); setCodeErr(""); }}
+              onKeyDown={handleCodeKey} autoFocus
+              style={{ width:"100%", padding:"11px 16px", fontSize:"15px", fontFamily:"Inter,-apple-system,sans-serif", border:`1px solid ${C.border}`, borderRadius:"980px", background:C.bg, color:C.ink, textAlign:"center", letterSpacing:"2px" }} />
+            {codeErr && <p style={{ fontSize:"13px", color:C.red }}>{codeErr}</p>}
+            <button onClick={startChat}
+              style={{ width:"100%", padding:"11px", background:C.ink, color:C.white, border:"none", borderRadius:"980px", fontSize:"15px", fontWeight:500, cursor:"pointer" }}>
+              Start gesprek
+            </button>
+          </div>
+        </div>
+      );
+
+      // CHAT
+      return (
+        <div style={{ minHeight:"100dvh", display:"flex", flexDirection:"column", background:C.white }}>
+
+          {/* Header */}
+          <div style={{ padding:"12px 20px", borderBottom:`1px solid ${C.border}`, display:"flex", justifyContent:"space-between", alignItems:"center", flexShrink:0 }}>
+            <span style={{ fontSize:"13px", color:C.light, fontWeight:500 }}>tdme · Marketing Agent</span>
+            <button onClick={() => downloadMd(messages)}
+              style={{ fontSize:"12px", color:C.mid, background:"transparent", border:`1px solid ${C.border}`, borderRadius:"980px", padding:"5px 12px", cursor:"pointer" }}>
+              Download gesprek
+            </button>
+          </div>
+
+          {/* Messages */}
+          <div style={{ flex:1, overflow:"auto", padding:"20px 24px", display:"flex", flexDirection:"column", gap:"14px", maxWidth:"680px", width:"100%", margin:"0 auto", alignSelf:"center" }}>
+            {messages.map((msg, i) => {
+              const attachLabel = msg.role === "user" ? getAttachmentLabel(msg) : null;
+              const displayText = getDisplayText(msg);
+              return msg.role === "assistant" ? (
+                <div key={i} className="msg-enter" style={{ alignSelf:"flex-start", maxWidth:"85%" }}>
+                  <div style={{ background:C.bg, padding:"12px 16px", borderRadius:"4px 18px 18px 18px", fontSize:"15px", lineHeight:1.65, color:C.ink }}>
+                    {fmt(displayText)}
+                  </div>
+                </div>
+              ) : (
+                <div key={i} className="msg-enter" style={{ alignSelf:"flex-end", maxWidth:"75%", display:"flex", flexDirection:"column", gap:"4px", alignItems:"flex-end" }}>
+                  {attachLabel && (
+                    <div style={{ fontSize:"12px", color:C.mid, background:C.bg, border:`1px solid ${C.border}`, borderRadius:"980px", padding:"3px 10px" }}>
+                      {attachLabel}
+                    </div>
+                  )}
+                  {displayText && (
+                    <div style={{ background:C.ink, padding:"12px 16px", borderRadius:"18px 4px 18px 18px", fontSize:"15px", lineHeight:1.65, color:C.white }}>
+                      {fmt(displayText)}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            {loading && (
+              <div style={{ alignSelf:"flex-start" }}>
+                <div style={{ background:C.bg, padding:"14px 18px", borderRadius:"4px 18px 18px 18px", display:"inline-flex", gap:"4px", alignItems:"center" }}>
+                  {["0s","0.2s","0.4s"].map(d => (
+                    <span key={d} style={{ width:"5px", height:"5px", borderRadius:"50%", background:C.light, display:"inline-block", animation:`bounce 1.2s ${d} infinite ease-in-out` }} />
+                  ))}
+                </div>
+              </div>
+            )}
+            <div ref={bottomRef} />
+          </div>
+
+          {/* Input area */}
+          <div style={{ borderTop:`1px solid ${C.border}`, padding:"10px 20px", background:C.white, flexShrink:0 }}>
+            <div style={{ maxWidth:"680px", width:"100%", margin:"0 auto" }}>
+
+              {/* Attachment preview */}
+              {(attachment || fileErr) && (
+                <div style={{ marginBottom:"8px", display:"flex", alignItems:"center", gap:"8px" }}>
+                  {attachment && (
+                    <div style={{ display:"flex", alignItems:"center", gap:"6px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:"980px", padding:"4px 12px", fontSize:"13px", color:C.mid }}>
+                      <span>{attachment.kind === "pdf" ? "📄" : attachment.kind === "image" ? "🖼️" : "📝"}</span>
+                      <span style={{ maxWidth:"200px", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{attachment.name}</span>
+                      <button onClick={() => setAttachment(null)}
+                        style={{ background:"none", border:"none", cursor:"pointer", color:C.light, fontSize:"14px", lineHeight:1, padding:"0 0 0 2px" }}>×</button>
+                    </div>
+                  )}
+                  {fileErr && <span style={{ fontSize:"12px", color:C.red }}>{fileErr}</span>}
+                </div>
+              )}
+
+              <div style={{ display:"flex", gap:"8px", alignItems:"flex-end" }}>
+
+                {/* Paperclip */}
+                <button onClick={() => fileRef.current?.click()} disabled={loading}
+                  title="Voeg bestand toe (PDF, afbeelding of tekst)"
+                  style={{ width:"40px", height:"40px", borderRadius:"50%", border:`1px solid ${C.border}`, background:"transparent", color:C.mid, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, transition:"all 0.2s" }}>
+                  <PaperclipIcon />
+                </button>
+                <input ref={fileRef} type="file" accept={ACCEPTED} onChange={handleFileChange} style={{ display:"none" }} />
+
+                <textarea ref={inputRef}
+                  style={{ flex:1, padding:"10px 16px", fontSize:"15px", fontFamily:"Inter,-apple-system,sans-serif", border:`1px solid ${C.border}`, borderRadius:"22px", background:C.bg, color:interim?C.mid:C.ink, resize:"none", minHeight:"42px", maxHeight:"120px", lineHeight:1.5 }}
+                  value={input + (interim ? " " + interim : "")}
+                  onChange={e => { if (!listening) setInput(e.target.value); }}
+                  onKeyDown={handleKey}
+                  placeholder={listening ? "Luisteren…" : "Typ, spreek of voeg een bestand toe…"}
+                  rows={1} disabled={loading}
+                />
+
+                {hasSpeech && (
+                  <button onClick={toggleMic} disabled={loading}
+                    style={{ width:"40px", height:"40px", borderRadius:"50%", border:`1px solid ${listening?C.ink:C.border}`, background:listening?C.ink:"transparent", color:listening?C.white:C.mid, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, animation:listening?"pulse 1.4s infinite":"none", transition:"all 0.2s" }}>
+                    <MicIcon on={listening} />
+                  </button>
+                )}
+
+                <button onClick={sendMessage} disabled={!canSend}
+                  style={{ width:"40px", height:"40px", borderRadius:"50%", border:"none", background:canSend?C.ink:C.bg, color:canSend?C.white:C.light, cursor:canSend?"pointer":"not-allowed", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, transition:"all 0.15s" }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="19" x2="12" y2="5" /><polyline points="5 12 12 5 19 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<Agent />);
+  </script>
+</body>
+</html>
