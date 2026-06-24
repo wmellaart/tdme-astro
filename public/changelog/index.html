@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tdme · Changelog</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #fff; font-family: 'Inter', -apple-system, sans-serif; color: #1d1d1f; -webkit-font-smoothing: antialiased; padding: 48px 24px 80px; }
+    .wrap { max-width: 600px; margin: 0 auto; }
+    .meta { font-size: 12px; letter-spacing: 1px; color: #aeaeb2; font-weight: 500; margin-bottom: 32px; }
+    h1 { font-size: clamp(26px, 4vw, 38px); font-weight: 600; letter-spacing: -0.5px; color: #1d1d1f; margin-bottom: 8px; }
+    .subtitle { font-size: 15px; color: #6e6e73; margin-bottom: 56px; }
+    .release { margin-bottom: 48px; }
+    .release-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #e5e5ea; }
+    .version { font-size: 18px; font-weight: 600; color: #1d1d1f; letter-spacing: -0.3px; }
+    .version-badge { font-size: 11px; background: #1d1d1f; color: #fff; border-radius: 4px; padding: 2px 7px; font-weight: 500; }
+    .version-badge.old { background: #f5f5f7; color: #6e6e73; border: 1px solid #e5e5ea; }
+    .date { font-size: 13px; color: #aeaeb2; }
+    .section-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #aeaeb2; margin: 16px 0 8px; }
+    ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    li { font-size: 14px; color: #3a3a3c; line-height: 1.55; padding-left: 16px; position: relative; }
+    li::before { content: "-"; position: absolute; left: 0; color: #aeaeb2; }
+    strong { color: #1d1d1f; font-weight: 500; }
+    a.back { display: inline-block; font-size: 13px; color: #6e6e73; text-decoration: none; border: 1px solid #e5e5ea; border-radius: 980px; padding: 6px 14px; margin-bottom: 40px; }
+    a.back:hover { color: #1d1d1f; border-color: #1d1d1f; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="meta">tdme · Marketing Agent</p>
+    <h1>Changelog</h1>
+    <p class="subtitle">All updates and improvements.</p>
+
+    <!-- v0.7 -->
+    <div class="release">
+      <div class="release-header">
+        <span class="version">v0.7</span>
+        <span class="version-badge">Current</span>
+        <span class="date">24 June 2026</span>
+      </div>
+      <p class="section-label">Added</p>
+      <ul>
+        <li><strong>Radar diagram analysis</strong> — after 9+ messages an "Analyse" button appears, generating scores on 6 axes (Proposition, GTM-readiness, Target focus, Brand identity, Sales-alignment, Scalability) as an interactive spider chart</li>
+      </ul>
+      <p class="section-label">Improved</p>
+      <ul>
+        <li>System prompt expanded: new Frameworks &amp; Models section (Jobs-to-be-Done, Value Disciplines, Seth Godin), extended B2B Marketing &amp; Sales and Branding sections, two new common founder mistakes added</li>
+      </ul>
+    </div>
+
+    <!-- v0.6 -->
+    <div class="release">
+      <div class="release-header">
+        <span class="version">v0.6</span>
+        <span class="version-badge old">Archive</span>
+        <span class="date">24 June 2026</span>
+      </div>
+      <p class="section-label">Fixed</p>
+      <ul>
+        <li>Conversation saving was never triggered — all conversations are now automatically saved after each exchange</li>
+      </ul>
+      <p class="section-label">Added</p>
+      <ul>
+        <li>Language detection: agent always starts in Dutch, switches to English if the user responds in English and continues consistently in that language</li>
+      </ul>
+    </div>
+
+    <!-- v0.5 -->
+    <div class="release">
+      <div class="release-header">
+        <span class="version">v0.5</span>
+        <span class="version-badge old">Archive</span>
+        <span class="date">10 June 2026</span>
+      </div>
+      <p class="section-label">Added</p>
+      <ul>
+        <li><strong>Structured intake</strong> step-by-step form (12 questions) with progress bar before the conversation starts</li>
+        <li><strong>Multiple-choice buttons</strong> for phase, geographic scope, budget and team composition</li>
+        <li><strong>Summary button</strong> generates structured markdown (company profile, insights, recommendations, next steps) as a download</li>
+      </ul>
+      <p class="section-label">Improved</p>
+      <ul>
+        <li>Token limit increased (1,200 to 2,500) — fixes truncated sentences</li>
+        <li>Date instruction strengthened: agent now receives the current year explicitly</li>
+        <li>Follow-up instruction tightened: minimum 2 to 3 deepening moments per topic before drawing conclusions</li>
+        <li>Three new intake questions: geographic scope, monthly budget, team size</li>
+      </ul>
+    </div>
+
+    <!-- v0.4 -->
+    <div class="release">
+      <div class="release-header">
+        <span class="version">v0.4</span>
+        <span class="version-badge old">Archive</span>
+        <span class="date">5 June 2026</span>
+      </div>
+      <p class="section-label">Added</p>
+      <ul>
+        <li>Conversations are automatically saved</li>
+        <li>Admin page to review saved conversations</li>
+      </ul>
+    </div>
+
+    <!-- v0.3 -->
+    <div class="release">
+      <div class="release-header">
+        <span class="version">v0.3</span>
+        <span class="version-badge old">Archive</span>
+        <span class="date">1 June 2026</span>
+      </div>
+      <p class="section-label">Improved</p>
+      <ul>
+        <li>Version indicator added to the interface</li>
+        <li>Fix: summary button always visible</li>
+        <li>Fix: download reminder added</li>
+      </ul>
+    </div>
+
+    <!-- v0.1 -->
+    <div class="release">
+      <div class="release-header">
+        <span class="version">v0.1</span>
+        <span class="version-badge old">Archive</span>
+        <span class="date">11 May 2026</span>
+      </div>
+      <p class="section-label">Added</p>
+      <ul>
+        <li>First version of the tdme Marketing Agent</li>
+        <li>Access code screen</li>
+        <li>Chat interface with speech recognition (Dutch)</li>
+        <li>File upload (PDF, image, text)</li>
+        <li>Download conversation as markdown</li>
+        <li>System prompt with tdme core philosophy, go-to-market approach and intake questions</li>
+      </ul>
+    </div>
+
+    <a class="back" href="/agent/">Back to the agent</a>
+  </div>
+</body>
+</html>
