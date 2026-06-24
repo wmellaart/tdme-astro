@@ -1,4 +1,4 @@
-# Changelog — tdme Marketing Agent
+# Changelog — tdme GTM Agent
 
 ## v0.7 — 24 June 2026
 
@@ -56,7 +56,7 @@
 ## v0.1 — 11 May 2026
 
 ### Added
-- First version of the tdme Marketing Agent
+- First version of the tdme GTM Agent
 - Access code screen
 - Chat interface with speech recognition (Dutch)
 - File upload (PDF, image, text)
