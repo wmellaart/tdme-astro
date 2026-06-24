@@ -791,10 +791,12 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
               style={{ width:"100%", padding:"11px", background:C.ink, color:C.white, border:"none", borderRadius:"980px", fontSize:"15px", fontWeight:500, cursor:"pointer" }}>
               {T[lang].startBtn}
             </button>
-            <label style={{ fontSize:"13px", color:C.mid, cursor:"pointer", textDecoration:"underline", textDecorationColor:C.border }}>
-              {lang === "en" ? "Skip intake — upload .md file" : "Intake overslaan — upload .md bestand"}
-              <input type="file" accept=".md,.txt" onChange={uploadIntakeMd} style={{ display:"none" }} />
-            </label>
+            {code.trim().toLowerCase() === ACCESS_CODE && (
+              <label style={{ fontSize:"13px", color:C.mid, cursor:"pointer", textDecoration:"underline", textDecorationColor:C.border }}>
+                {lang === "en" ? "Skip intake — upload .md file" : "Intake overslaan — upload .md bestand"}
+                <input type="file" accept=".md,.txt" onChange={uploadIntakeMd} style={{ display:"none" }} />
+              </label>
+            )}
           </div>
         </div>
       );
