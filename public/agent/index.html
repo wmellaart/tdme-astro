@@ -674,37 +674,52 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
         const svgBlob = new Blob([svgData], { type:"image/svg+xml;charset=utf-8" });
         const url = URL.createObjectURL(svgBlob);
         const dpr = 2;
-        const W = 560, H = 80 + 280 + 20 + diagram.assen.length * 30 + 40;
+        const W = 640, rowH = 34, chartSize = 280;
+        const H = 56 + chartSize + 32 + diagram.assen.length * rowH + 48;
         const canvas = document.createElement("canvas");
         canvas.width = W * dpr; canvas.height = H * dpr;
         const ctx = canvas.getContext("2d");
         ctx.scale(dpr, dpr);
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, W, H);
-        ctx.font = "500 11px -apple-system,sans-serif";
+
+        // header
+        ctx.font = "400 11px -apple-system,sans-serif";
         ctx.fillStyle = "#aeaeb2";
         ctx.textAlign = "center";
-        ctx.fillText(`tdme GTM Agent  ·  ${diagram.bedrijf}`, W / 2, 28);
+        ctx.fillText(`tdme GTM Agent  -  ${diagram.bedrijf}`, W / 2, 28);
+
         const img = new Image();
         img.onload = () => {
-          ctx.drawImage(img, (W - 280) / 2, 44, 280, 280);
-          const listTop = 44 + 280 + 24;
+          ctx.drawImage(img, (W - chartSize) / 2, 48, chartSize, chartSize);
+
+          // find widest axis name to set toel start dynamically
+          ctx.font = "500 13px -apple-system,sans-serif";
+          const nameColW = Math.max(...diagram.assen.map(as => ctx.measureText(as.naam).width));
+          const xScore = 40, xNaam = 76, xToel = xNaam + nameColW + 20;
+          const maxToel = W - xToel - 32;
+
+          const listTop = 48 + chartSize + 28;
           diagram.assen.forEach((as, i) => {
-            const y = listTop + i * 30;
+            const y = listTop + i * rowH;
             ctx.textAlign = "left";
+
             ctx.font = "600 13px -apple-system,sans-serif";
             ctx.fillStyle = "#1d1d1f";
-            ctx.fillText(String(as.score), 40, y);
+            ctx.fillText(String(as.score), xScore, y);
+
             ctx.font = "500 13px -apple-system,sans-serif";
-            ctx.fillText(as.naam, 72, y);
+            ctx.fillStyle = "#1d1d1f";
+            ctx.fillText(as.naam, xNaam, y);
+
             ctx.font = "400 12px -apple-system,sans-serif";
             ctx.fillStyle = "#6e6e73";
-            const max = W - 175;
             let toel = as.toelichting;
-            while (ctx.measureText(toel).width > max && toel.length > 10) toel = toel.slice(0, -1);
-            if (toel !== as.toelichting) toel += "…";
-            ctx.fillText("— " + toel, 160, y);
+            while (ctx.measureText(toel).width > maxToel && toel.length > 10) toel = toel.slice(0, -1);
+            if (toel !== as.toelichting) toel += "...";
+            ctx.fillText("- " + toel, xToel, y);
           });
+
           canvas.toBlob(blob => {
             const a = document.createElement("a");
             a.href = URL.createObjectURL(blob);
