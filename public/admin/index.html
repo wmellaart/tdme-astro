@@ -41,6 +41,35 @@
       day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit"
     });
 
+    function RadarChart({ data, size = 260 }) {
+      const n = data.length;
+      const cx = size / 2, cy = size / 2, r = size * 0.32;
+      const ang = (i) => (2 * Math.PI * i / n) - Math.PI / 2;
+      const pt  = (i, s) => ({ x: cx + r * (s / 10) * Math.cos(ang(i)), y: cy + r * (s / 10) * Math.sin(ang(i)) });
+      const gridLevels = [0.25, 0.5, 0.75, 1].map(ratio =>
+        data.map((_, i) => `${cx + r * ratio * Math.cos(ang(i))},${cy + r * ratio * Math.sin(ang(i))}`).join(" ")
+      );
+      const dataPoints = data.map((d, i) => { const p = pt(i, d.score); return `${p.x},${p.y}`; }).join(" ");
+      return (
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display:"block", margin:"0 auto" }}>
+          {gridLevels.map((pts, l) => <polygon key={l} points={pts} fill="none" stroke="#e5e5ea" strokeWidth="1" />)}
+          {data.map((_, i) => <line key={i} x1={cx} y1={cy} x2={cx + r * Math.cos(ang(i))} y2={cy + r * Math.sin(ang(i))} stroke="#e5e5ea" strokeWidth="1" />)}
+          <polygon points={dataPoints} fill="rgba(29,29,31,0.08)" stroke="#1d1d1f" strokeWidth="2" />
+          {data.map((d, i) => { const p = pt(i, d.score); return <circle key={i} cx={p.x} cy={p.y} r="4" fill="#1d1d1f" />; })}
+          {data.map((d, i) => {
+            const lr = r + 28;
+            const x = cx + lr * Math.cos(ang(i)), y = cy + lr * Math.sin(ang(i));
+            return (
+              <g key={i}>
+                <text x={x} y={y - 5}  textAnchor="middle" fontSize="9"  fontFamily="Inter,sans-serif" fill="#6e6e73">{d.naam}</text>
+                <text x={x} y={y + 8}  textAnchor="middle" fontSize="11" fontFamily="Inter,sans-serif" fontWeight="600" fill="#1d1d1f">{d.score}</text>
+              </g>
+            );
+          })}
+        </svg>
+      );
+    }
+
     function Admin() {
       const [phase,    setPhase]    = useState("login");
       const [key,      setKey]      = useState("");
@@ -196,6 +225,25 @@
                     );
                   })}
                 </div>
+                {detail.diagram && !detail.diagram.error && (
+                  <div style={{ marginTop:"32px", border:`1px solid ${C.border}`, borderRadius:"16px", padding:"20px" }}>
+                    <p style={{ fontSize:"11px", letterSpacing:"1px", textTransform:"uppercase", color:C.light, marginBottom:"16px", textAlign:"center" }}>
+                      Analyse · {detail.diagram.bedrijf}
+                    </p>
+                    <RadarChart data={detail.diagram.assen} />
+                    <div style={{ marginTop:"20px", display:"flex", flexDirection:"column", gap:"8px" }}>
+                      {detail.diagram.assen.map((as, i) => (
+                        <div key={i} style={{ display:"flex", gap:"10px", alignItems:"flex-start" }}>
+                          <span style={{ fontSize:"13px", fontWeight:600, color:C.ink, minWidth:"28px" }}>{as.score}</span>
+                          <div>
+                            <span style={{ fontSize:"13px", fontWeight:500, color:C.ink }}>{as.naam}</span>
+                            <span style={{ fontSize:"13px", color:C.mid }}> — {as.toelichting}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </>
             )}
           </div>

@@ -311,11 +311,11 @@ Begin met een korte reflectie op de ingevulde intake en stel direct een verdiepe
 
     // ─── API ──────────────────────────────────────────────────────────────────
 
-    const saveConversation = (messages) => {
+    const saveConversation = (messages, diagram = null) => {
       fetch(WORKER_URL + "/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages }),
+        body: JSON.stringify({ messages, diagram }),
       }).catch(() => {});
     };
 
@@ -385,7 +385,7 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
       const dataPoints = data.map((d, i) => { const p = pt(i, d.score); return `${p.x},${p.y}`; }).join(" ");
 
       return (
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display:"block", margin:"0 auto" }}>
+        <svg className="radar-svg" width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display:"block", margin:"0 auto" }}>
           {gridLevels.map((pts, l) => <polygon key={l} points={pts} fill="none" stroke="#e5e5ea" strokeWidth="1" />)}
           {data.map((_, i) => <line key={i} x1={cx} y1={cy} x2={cx + r * Math.cos(ang(i))} y2={cy + r * Math.sin(ang(i))} stroke="#e5e5ea" strokeWidth="1" />)}
           <polygon points={dataPoints} fill="rgba(29,29,31,0.08)" stroke="#1d1d1f" strokeWidth="2" />
@@ -605,6 +605,26 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
         setPhase("intake");
       };
 
+      const uploadIntakeMd = async (e) => {
+        if (code.trim().toLowerCase() !== ACCESS_CODE) { setCodeErr(T[lang].invalidCode); return; }
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const text = await file.text();
+        setPhase("chat");
+        setLoading(true);
+        const userMsg = { role:"user", content: text };
+        try {
+          const reply = await callClaude([userMsg]);
+          const initial = [userMsg, { role:"assistant", content:reply }];
+          setMessages(initial);
+          saveConversation(initial);
+        } catch(err) {
+          setMessages([userMsg, { role:"assistant", content:`Fout: ${err.message}` }]);
+        }
+        setLoading(false);
+        e.target.value = "";
+      };
+
       const completeIntake = async (answers) => {
         setPhase("chat");
         setLoading(true);
@@ -626,7 +646,7 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
         const content = buildContent(input.trim(), attachment);
         const userMsg = { role:"user", content };
         const updated = [...messages, userMsg];
-        setMessages(updated); setInput(""); setInterim(""); setAttachment(null); setLoading(true);
+        setMessages(updated); setInput(""); setInterim(""); setAttachment(null); setLoading(true); setDiagram(null);
         try {
           const reply = await callClaude(updated);
           const next = [...updated, { role:"assistant", content:reply }];
@@ -636,6 +656,56 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
           setMessages([...updated, { role:"assistant", content:`Fout: ${e.message}` }]);
         }
         setLoading(false);
+      };
+
+      const downloadDiagram = () => {
+        if (!diagram) return;
+        const svgEl = document.querySelector(".radar-svg");
+        if (!svgEl) return;
+        const svgData = new XMLSerializer().serializeToString(svgEl);
+        const svgBlob = new Blob([svgData], { type:"image/svg+xml;charset=utf-8" });
+        const url = URL.createObjectURL(svgBlob);
+        const dpr = 2;
+        const W = 560, H = 80 + 280 + 20 + diagram.assen.length * 30 + 40;
+        const canvas = document.createElement("canvas");
+        canvas.width = W * dpr; canvas.height = H * dpr;
+        const ctx = canvas.getContext("2d");
+        ctx.scale(dpr, dpr);
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, W, H);
+        ctx.font = "500 11px -apple-system,sans-serif";
+        ctx.fillStyle = "#aeaeb2";
+        ctx.textAlign = "center";
+        ctx.fillText(`tdme GTM Agent  ·  ${diagram.bedrijf}`, W / 2, 28);
+        const img = new Image();
+        img.onload = () => {
+          ctx.drawImage(img, (W - 280) / 2, 44, 280, 280);
+          const listTop = 44 + 280 + 24;
+          diagram.assen.forEach((as, i) => {
+            const y = listTop + i * 30;
+            ctx.textAlign = "left";
+            ctx.font = "600 13px -apple-system,sans-serif";
+            ctx.fillStyle = "#1d1d1f";
+            ctx.fillText(String(as.score), 40, y);
+            ctx.font = "500 13px -apple-system,sans-serif";
+            ctx.fillText(as.naam, 72, y);
+            ctx.font = "400 12px -apple-system,sans-serif";
+            ctx.fillStyle = "#6e6e73";
+            const max = W - 175;
+            let toel = as.toelichting;
+            while (ctx.measureText(toel).width > max && toel.length > 10) toel = toel.slice(0, -1);
+            if (toel !== as.toelichting) toel += "…";
+            ctx.fillText("— " + toel, 160, y);
+          });
+          canvas.toBlob(blob => {
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = `tdme-analyse-${diagram.bedrijf.replace(/\s+/g,"-").toLowerCase()}.png`;
+            a.click();
+          }, "image/png");
+          URL.revokeObjectURL(url);
+        };
+        img.src = url;
       };
 
       const generateDiagram = async () => {
@@ -648,7 +718,9 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
         try {
           const reply = await callClaude([{ role:"user", content: DIAGRAM_PROMPT(transcript) }], 800);
           const clean = reply.replace(/```json|```/g, "").trim();
-          setDiagram(JSON.parse(clean));
+          const parsed = JSON.parse(clean);
+          setDiagram(parsed);
+          saveConversation(messages, parsed);
         } catch {
           setDiagram({ error: lang === "en" ? "Could not generate diagram. Please try again." : "Kon diagram niet genereren. Probeer opnieuw." });
         }
@@ -719,6 +791,10 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
               style={{ width:"100%", padding:"11px", background:C.ink, color:C.white, border:"none", borderRadius:"980px", fontSize:"15px", fontWeight:500, cursor:"pointer" }}>
               {T[lang].startBtn}
             </button>
+            <label style={{ fontSize:"13px", color:C.mid, cursor:"pointer", textDecoration:"underline", textDecorationColor:C.border }}>
+              {lang === "en" ? "Skip intake — upload .md file" : "Intake overslaan — upload .md bestand"}
+              <input type="file" accept=".md,.txt" onChange={uploadIntakeMd} style={{ display:"none" }} />
+            </label>
           </div>
         </div>
       );
@@ -731,7 +807,7 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
         <div style={{ minHeight:"100dvh", display:"flex", flexDirection:"column", background:C.white }}>
 
           {/* Header */}
-          <div style={{ padding:"12px 20px", borderBottom:`1px solid ${C.border}`, display:"flex", justifyContent:"space-between", alignItems:"center", flexShrink:0 }}>
+          <div style={{ padding:"12px 20px", borderBottom:`1px solid ${C.border}`, display:"flex", justifyContent:"space-between", alignItems:"center", flexShrink:0, position:"sticky", top:0, background:C.white, zIndex:10 }}>
             <span style={{ fontSize:"13px", color:C.light, fontWeight:500 }}>tdme · GTM Agent <span style={{ fontSize:"11px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:"4px", padding:"1px 6px", marginLeft:"4px", letterSpacing:"0" }}>v0.7</span></span>
             <div style={{ display:"flex", gap:"8px" }}>
               {messages.length >= 6 && (
@@ -788,7 +864,9 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
               </div>
             )}
             {diagram && !diagram.error && (
-              <div className="msg-enter" style={{ background:C.white, border:`1px solid ${C.border}`, borderRadius:"16px", padding:"20px", marginTop:"8px" }}>
+              <div className="msg-enter" style={{ background:C.white, border:`1px solid ${C.border}`, borderRadius:"16px", padding:"20px", marginTop:"8px", position:"relative" }}>
+                <button onClick={() => setDiagram(null)}
+                  style={{ position:"absolute", top:"12px", right:"14px", background:"transparent", border:"none", fontSize:"16px", color:C.light, cursor:"pointer", lineHeight:1 }}>×</button>
                 <p style={{ fontSize:"12px", letterSpacing:"1px", textTransform:"uppercase", color:C.light, marginBottom:"16px", textAlign:"center" }}>
                   {lang === "en" ? "Analysis" : "Analyse"} · {diagram.bedrijf}
                 </p>
@@ -803,6 +881,12 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
                       </div>
                     </div>
                   ))}
+                </div>
+                <div style={{ marginTop:"16px", textAlign:"center" }}>
+                  <button onClick={downloadDiagram}
+                    style={{ fontSize:"12px", color:C.mid, background:"transparent", border:`1px solid ${C.border}`, borderRadius:"980px", padding:"5px 14px", cursor:"pointer" }}>
+                    {lang === "en" ? "Download PNG" : "Download PNG"}
+                  </button>
                 </div>
               </div>
             )}
