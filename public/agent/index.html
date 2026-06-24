@@ -166,6 +166,7 @@ TOON
 - Praktisch: altijd gericht op wat de founder morgen kan doen
 - Nieuwsgierig: vraag door
 - Geen buzzwords of managementtaal
+- Houd antwoorden kort: maximaal 3-4 alinea's. Geen uitputtende opsommingen. Liever één scherpe vraag dan drie vage. Schrijf zoals je praat.
 - Begin de intake altijd in het Nederlands. Detecteer de taal van de gebruiker tijdens het gesprek en schakel over naar Engels als de gebruiker in het Engels antwoordt. Voer het hele gesprek consequent in dezelfde taal.
 
 GRENZEN
@@ -557,11 +558,18 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
       const [genDiagram,     setGenDiagram]     = useState(false);
 
       const bottomRef  = useRef(null);
+      const lastMsgRef = useRef(null);
       const inputRef   = useRef(null);
       const fileRef    = useRef(null);
       const recognizer = useRef(null);
 
-      useEffect(() => { bottomRef.current?.scrollIntoView({ behavior:"smooth" }); }, [messages, loading]);
+      useEffect(() => {
+        if (loading) {
+          bottomRef.current?.scrollIntoView({ behavior:"smooth" });
+        } else {
+          lastMsgRef.current?.scrollIntoView({ behavior:"smooth", block:"start" });
+        }
+      }, [messages, loading]);
       useEffect(() => { if (phase === "chat" && !loading) inputRef.current?.focus(); }, [phase, loading]);
 
       useEffect(() => {
@@ -835,8 +843,9 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
               if (i === 0 && msg.role === "user") return null;
               const attachLabel = msg.role === "user" ? getAttachmentLabel(msg) : null;
               const displayText = getDisplayText(msg);
+              const isLast = i === messages.length - 1;
               return msg.role === "assistant" ? (
-                <div key={i} className="msg-enter" style={{ alignSelf:"flex-start", maxWidth:"85%" }}>
+                <div key={i} ref={isLast ? lastMsgRef : null} className="msg-enter" style={{ alignSelf:"flex-start", maxWidth:"85%" }}>
                   <div style={{ background:C.bg, padding:"12px 16px", borderRadius:"4px 18px 18px 18px", fontSize:"15px", lineHeight:1.65, color:C.ink }}>
                     {fmt(displayText)}
                   </div>
