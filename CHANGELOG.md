@@ -1,5 +1,15 @@
 # Changelog — tdme GTM Agent
 
+## v0.8.1 — 26 June 2026
+
+### Security
+- System prompt (agent knowledge) moved out of browser source code into Cloudflare KV — no longer readable via "View source"
+- Worker injects knowledge server-side on every request, with a live date header
+- New editor role (separate key) required to view or publish the knowledge base via admin
+- Admin: Kennisbasis tab only appears when logged in with the editor key; regular admin key shows Gesprekken + Input only
+
+---
+
 ## v0.8 — 26 June 2026
 
 ### Added
