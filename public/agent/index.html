@@ -886,12 +886,12 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
                 </button>
                 <input ref={fileRef} type="file" accept={ACCEPTED} onChange={handleFileChange} style={{ display:"none" }} />
                 <textarea ref={inputRef}
-                  style={{ flex:1, padding:"10px 16px", fontSize:"15px", fontFamily:"Inter,-apple-system,sans-serif", border:`1px solid ${C.border}`, borderRadius:"22px", background:C.bg, color:interim?C.mid:C.ink, resize:"none", minHeight:"42px", maxHeight:"120px", lineHeight:1.5 }}
+                  style={{ flex:1, padding:"10px 16px", fontSize:"15px", fontFamily:"Inter,-apple-system,sans-serif", border:`1px solid ${C.border}`, borderRadius:"12px", background:C.bg, color:interim?C.mid:C.ink, resize:"none", minHeight:"130px", maxHeight:"240px", lineHeight:1.5 }}
                   value={input + (interim ? " " + interim : "")}
                   onChange={e => { if (!listening) setInput(e.target.value); }}
                   onKeyDown={handleKey}
                   placeholder={listening ? T[lang].listeningPlaceholder : T[lang].inputPlaceholder}
-                  rows={1} disabled={loading}
+                  rows={5} disabled={loading}
                 />
                 {hasSpeech && (
                   <button onClick={toggleMic} disabled={loading}
