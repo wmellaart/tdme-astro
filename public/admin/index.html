@@ -564,6 +564,7 @@ Wees specifiek en concreet. Dit wordt direct gebruikt als kennisbasis voor een A
       const [keyErr,  setKeyErr]  = useState("");
       const [loading, setLoading] = useState(false);
       const [tab,     setTab]     = useState("gesprekken");
+      const [role,    setRole]    = useState("admin"); // "admin" | "editor"
 
       const login = async () => {
         if (!key.trim()) { setKeyErr("Voer een admin-sleutel in."); return; }
@@ -571,6 +572,8 @@ Wees specifiek en concreet. Dit wordt direct gebruikt als kennisbasis voor een A
         try {
           const res = await fetch(`${WORKER_URL}/list`, { headers: { "X-Admin-Key": key } });
           if (res.status === 401) { setKeyErr("Ongeldige sleutel."); setLoading(false); return; }
+          const spRes = await fetch(`${WORKER_URL}/system-prompt`, { headers: { "X-Admin-Key": key } });
+          setRole(spRes.ok ? "editor" : "admin");
           setPhase("app");
         } catch {
           setKeyErr("Verbindingsfout. Probeer opnieuw.");
@@ -607,7 +610,7 @@ Wees specifiek en concreet. Dit wordt direct gebruikt als kennisbasis voor een A
         <div style={{ minHeight:"100dvh", display:"flex", flexDirection:"column", background:C.white }}>
           <div style={{ padding:"10px 20px", borderBottom:`1px solid ${C.border}`, display:"flex", alignItems:"center", gap:"16px", flexShrink:0 }}>
             <span style={{ fontSize:"13px", color:C.light, fontWeight:500, marginRight:"8px" }}>tdme · Admin</span>
-            {["gesprekken","kennisextractie","kennisbasis"].map(t => (
+            {["gesprekken","kennisextractie", ...(role === "editor" ? ["kennisbasis"] : [])].map(t => (
               <button key={t} onClick={() => setTab(t)}
                 style={{ fontSize:"13px", fontWeight:500, background:"transparent", border:"none", borderBottom:`2px solid ${tab === t ? C.ink : "transparent"}`, color:tab === t ? C.ink : C.mid, cursor:"pointer", padding:"4px 0", transition:"all 0.15s" }}>
                 {t === "gesprekken" ? "Gesprekken" : t === "kennisextractie" ? "Input" : "Kennisbasis"}
