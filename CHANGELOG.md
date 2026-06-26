@@ -1,5 +1,17 @@
 # Changelog — tdme GTM Agent
 
+## v0.8 — 26 June 2026
+
+### Added
+- Topic progress sidebar: 6 axes shown alongside the chat (active highlighted, completed with checkmark); collapses to a horizontal strip on mobile
+- Hidden system marker `<<TDME:active=...;done=...>>` lets the agent signal which topic it is covering; stripped before display, used only to drive the sidebar state
+
+### Improved
+- System prompt restructured: agent now runs a structured assessment along the 6 radar axes (Propositie, GTM-gereedheid, Doelgroepfocus, Merkidentiteit, Sales-alignment, Schaalbaarheid), with bounded follow-up (1-2 questions per topic), explicit topic transitions, and a defined conversation ending with summary and Analyseer CTA
+- Opening message now announces the structure to the founder in one sentence
+
+---
+
 ## v0.7 — 24 June 2026
 
 ### Added
