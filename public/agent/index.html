@@ -7,7 +7,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="icon" href="/favicon.ico" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body, #root { height: 100%; }
@@ -29,27 +29,115 @@
       from { opacity: 0; transform: translateX(16px); }
       to   { opacity: 1; transform: translateX(0); }
     }
+    @keyframes topicPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(8,145,178,0.3); }
+      50%       { box-shadow: 0 0 0 6px rgba(8,145,178,0); }
+    }
 
-    .msg-enter  { animation: fadeIn 0.18s ease forwards; }
-    .slide-in   { animation: slideIn 0.22s ease forwards; }
+    .msg-enter { animation: fadeIn 0.18s ease forwards; }
+    .slide-in  { animation: slideIn 0.22s ease forwards; }
     textarea:focus, input:focus { border-color: #1d1d1f !important; outline: none; }
     button { font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 2px; }
 
-    .tdme-layout { display:flex; height:100dvh; }
-    .tdme-main   { flex:1; min-width:0; display:flex; flex-direction:column; }
-    .tdme-side   { width:208px; flex:0 0 208px; border-right:1px solid #e5e5ea; padding:18px 14px; overflow:auto; background:#fff; }
-    .tdme-side-label { font-size:11px; letter-spacing:1px; color:#aeaeb2; font-weight:500; text-transform:uppercase; margin-bottom:14px; }
-    .tdme-topics { display:flex; flex-direction:column; gap:2px; }
-    .tdme-topic  { display:flex; align-items:center; gap:10px; padding:9px 8px; border-radius:8px; white-space:nowrap; }
-    .tdme-side-foot { font-size:11px; color:#aeaeb2; line-height:1.5; margin-top:14px; }
+    /* ── APP SHELL ── */
+    .agent-app     { display:flex; flex-direction:column; height:100dvh; overflow:hidden; }
+
+    /* Topbar */
+    .agent-topbar  { display:flex; align-items:center; justify-content:space-between; padding:0 20px; height:52px; border-bottom:1px solid #e5e5ea; flex-shrink:0; background:#fff; z-index:20; }
+    .logo-wrap     { display:flex; align-items:center; gap:8px; }
+    .logo-dot      { width:9px; height:9px; border-radius:50%; background:#f97316; flex-shrink:0; }
+    .logo-name     { font-size:15px; font-weight:600; color:#1d1d1f; }
+    .logo-sub      { font-size:13px; font-weight:400; color:#aeaeb2; }
+    .topbar-actions { display:flex; gap:8px; align-items:center; }
+
+    /* Body */
+    .agent-body { display:flex; flex:1; min-height:0; overflow:hidden; }
+
+    /* Journey panel */
+    .journey-panel  { width:220px; flex:0 0 220px; border-right:1px solid #e5e5ea; display:flex; flex-direction:column; overflow:hidden; background:#fafafa; }
+    .journey-scroll { flex:1; overflow-y:auto; padding:18px 14px 14px; }
+    .journey-hdr    { font-size:10px; letter-spacing:1.5px; font-weight:600; color:#aeaeb2; text-transform:uppercase; margin-bottom:18px; }
+    .journey-list   { display:flex; flex-direction:column; gap:2px; position:relative; }
+    .journey-list::before { content:""; position:absolute; left:15px; top:22px; bottom:22px; width:1.5px; background:#e5e5ea; z-index:0; }
+    .journey-item   { display:flex; align-items:flex-start; gap:10px; padding:8px 6px; border-radius:10px; position:relative; z-index:1; transition:background 0.15s; }
+    .journey-item.done   { background:#f0fdf4; }
+    .journey-item.active { background:#ecfeff; animation:topicPulse 2.5s infinite; }
+    .j-icon { width:30px; height:30px; border-radius:50%; display:grid; place-items:center; flex-shrink:0; font-size:14px; font-weight:700; }
+    .j-meta { flex:1; min-width:0; padding-top:3px; }
+    .j-name { font-size:13px; font-weight:600; color:#1d1d1f; line-height:1.3; }
+    .j-name.dim { color:#aeaeb2; font-weight:400; }
+    .j-status { font-size:11px; margin-top:2px; }
+    .j-score  { font-size:12px; font-weight:700; color:#16a34a; }
+
+    .insights-section { padding:12px 14px; border-top:1px solid #e5e5ea; flex-shrink:0; }
+    .insights-hdr     { font-size:10px; letter-spacing:1.5px; font-weight:600; color:#aeaeb2; text-transform:uppercase; margin-bottom:10px; }
+    .insight-card { padding:8px 10px; border-radius:8px; margin-bottom:6px; border-left:3px solid transparent; font-size:12px; line-height:1.5; color:#1d1d1f; }
+    .insight-card.positive { background:#f0fdf4; border-color:#22c55e; }
+    .insight-card.attention { background:#fffbeb; border-color:#f59e0b; }
+    .insight-card.info { background:#eff6ff; border-color:#3b82f6; }
+
+    /* Main */
+    .agent-main { flex:1; min-width:0; display:flex; flex-direction:column; overflow:hidden; position:relative; background:#fff; }
+
+    /* Dashboard strip */
+    .agent-dash { display:flex; align-items:center; gap:16px; padding:12px 20px; border-bottom:1px solid #e5e5ea; background:#fafafa; flex-shrink:0; }
+    .dash-mat   { display:flex; flex-direction:column; align-items:center; gap:2px; flex-shrink:0; }
+    .dash-lbl   { font-size:10px; font-weight:600; letter-spacing:1px; color:#aeaeb2; text-transform:uppercase; }
+    .dash-radar { flex:1; display:flex; align-items:center; justify-content:center; }
+    .dash-legend { display:flex; flex-direction:column; gap:5px; font-size:11px; color:#6e6e73; flex-shrink:0; }
+    .dl-item  { display:flex; align-items:center; gap:5px; }
+    .dl-dot   { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+    /* Section heading */
+    .agent-section { padding:12px 20px 10px; border-bottom:1px solid #e5e5ea; flex-shrink:0; }
+    .sec-title { font-size:17px; font-weight:700; color:#1d1d1f; letter-spacing:-0.3px; }
+    .sec-q     { font-size:13px; color:#6e6e73; margin-top:3px; line-height:1.4; }
+
+    /* Chat messages */
+    .agent-chat { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:12px; }
+
+    .welcome-card   { display:flex; gap:12px; background:#f5f5f7; border-radius:16px; padding:16px; }
+    .welcome-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,#1d1d1f,#6e6e73); display:grid; place-items:center; font-size:17px; flex-shrink:0; }
+    .welcome-name   { font-size:14px; font-weight:600; color:#1d1d1f; }
+    .welcome-sub    { font-size:13px; color:#6e6e73; margin-top:2px; line-height:1.4; }
+
+    .channels-card { border:1px solid #e5e5ea; border-radius:12px; padding:14px 16px; }
+    .channels-hdr  { font-size:10px; letter-spacing:1.5px; font-weight:600; color:#aeaeb2; text-transform:uppercase; margin-bottom:12px; }
+    .ch-row  { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+    .ch-name { font-size:12px; color:#6e6e73; width:90px; flex-shrink:0; }
+    .ch-track { flex:1; height:6px; background:#f0f0f0; border-radius:3px; overflow:hidden; }
+    .ch-fill  { height:100%; border-radius:3px; transition:width 0.4s ease; }
+    .ch-pct   { font-size:11px; color:#aeaeb2; width:28px; text-align:right; flex-shrink:0; }
+
+    /* Input */
+    .agent-input-wrap { padding:12px 20px; border-top:1px solid #e5e5ea; flex-shrink:0; background:#fff; }
+    .input-row { display:flex; gap:8px; align-items:flex-end; }
+
+    /* Floating toolbar */
+    .toolbar-float { position:absolute; right:14px; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:6px; z-index:10; }
+    .tb-btn { width:34px; height:34px; border-radius:9px; border:1px solid #e5e5ea; background:#fff; color:#6e6e73; cursor:pointer; display:grid; place-items:center; transition:all 0.15s; }
+    .tb-btn:hover:not(:disabled) { border-color:#1d1d1f; color:#1d1d1f; }
+    .tb-btn:disabled { opacity:0.35; cursor:default; }
+
+    /* Intake/access (legacy classes kept) */
     @media (max-width:680px){
-      .tdme-layout { flex-direction:column; }
-      .tdme-side   { width:auto; flex:0 0 auto; border-right:none; border-bottom:1px solid #e5e5ea; padding:10px 12px; overflow-x:auto; overflow-y:hidden; }
-      .tdme-topics { flex-direction:row; gap:8px; }
-      .tdme-topic  { flex:0 0 auto; }
-      .tdme-side-label, .tdme-side-foot { display:none; }
+      .agent-body { flex-direction:column; }
+      .journey-panel { width:auto; flex:0 0 auto; border-right:none; border-bottom:1px solid #e5e5ea; }
+      .journey-scroll { overflow-x:auto; overflow-y:hidden; padding:10px 12px; }
+      .journey-hdr, .insights-section { display:none; }
+      .journey-list { flex-direction:row; gap:6px; }
+      .journey-list::before { display:none; }
+      .journey-item { flex-direction:column; align-items:center; min-width:60px; padding:6px 4px; text-align:center; }
+      .j-meta { padding-top:0; }
+      .j-name { font-size:11px; }
+      .j-status { display:none; }
+      .agent-dash { gap:10px; padding:10px 14px; }
+      .dash-legend { display:none; }
+      .toolbar-float { display:none; }
+      .agent-chat { padding:14px; }
+      .agent-input-wrap { padding:8px 14px; }
     }
   </style>
 </head>
@@ -68,7 +156,6 @@
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const hasSpeech = !!SpeechRecognition;
-
 
     // ─── TRANSLATIONS ────────────────────────────────────────────────────────
 
@@ -90,9 +177,9 @@
         listeningPlaceholder: "Luisteren…",
         fileTooBig: "Bestand is te groot (max 10 MB).",
         fileReadError: "Kon bestand niet lezen.",
-        summaryPrompt: `Maak op basis van dit gesprek een gestructureerde samenvatting met:\n\n1. Bedrijfsprofiel (kern in 3–5 bullets)\n2. Kernvraagstuk en context\n3. Belangrijkste inzichten uit het gesprek\n4. Concrete aanbevelingen (top 3–5, op prioriteit)\n5. Aanbevolen vervolgstappen\n\nHoud het beknopt, eerlijk en bruikbaar — zowel voor intern gebruik als voor de founder.`,
-        downloadTitle: "tdme GTM Agent — gesprek",
-        downloadSummaryTitle: "tdme GTM Agent — samenvatting",
+        summaryPrompt: `Maak op basis van dit gesprek een gestructureerde samenvatting met:\n\n1. Bedrijfsprofiel (kern in 3-5 bullets)\n2. Kernvraagstuk en context\n3. Belangrijkste inzichten uit het gesprek\n4. Concrete aanbevelingen (top 3-5, op prioriteit)\n5. Aanbevolen vervolgstappen\n\nHoud het beknopt, eerlijk en bruikbaar - zowel voor intern gebruik als voor de founder.`,
+        downloadTitle: "tdme GTM Agent - gesprek",
+        downloadSummaryTitle: "tdme GTM Agent - samenvatting",
       },
       en: {
         headline: "Let's get started",
@@ -111,21 +198,21 @@
         listeningPlaceholder: "Listening…",
         fileTooBig: "File is too large (max 10 MB).",
         fileReadError: "Could not read file.",
-        summaryPrompt: `Based on this conversation, create a structured summary with:\n\n1. Company profile (key points in 3–5 bullets)\n2. Core challenge and context\n3. Key insights from the conversation\n4. Concrete recommendations (top 3–5, by priority)\n5. Recommended next steps\n\nKeep it concise, honest and actionable — useful for both internal use and the founder.`,
-        downloadTitle: "tdme GTM Agent — conversation",
-        downloadSummaryTitle: "tdme GTM Agent — summary",
+        summaryPrompt: `Based on this conversation, create a structured summary with:\n\n1. Company profile (key points in 3-5 bullets)\n2. Core challenge and context\n3. Key insights from the conversation\n4. Concrete recommendations (top 3-5, by priority)\n5. Recommended next steps\n\nKeep it concise, honest and actionable - useful for both internal use and the founder.`,
+        downloadTitle: "tdme GTM Agent - conversation",
+        downloadSummaryTitle: "tdme GTM Agent - summary",
       },
     };
 
     // ─── INTAKE QUESTIONS ────────────────────────────────────────────────────
 
     const getIntakeQuestions = (lang) => lang === "en" ? [
-      { id: 1,  key: "bedrijf",          type: "text",      question: "What does your company do, and for whom?",                                          hint: "1–3 sentences",          placeholder: "Describe your product or service and target audience…" },
+      { id: 1,  key: "bedrijf",          type: "text",      question: "What does your company do, and for whom?",                                          hint: "1-3 sentences",          placeholder: "Describe your product or service and target audience…" },
       { id: 2,  key: "fase",             type: "choice",    question: "What stage are you at?",                                                            options: ["Pre-seed", "Seed", "Early traction", "Scale-up"] },
       { id: 3,  key: "verdienmodel",     type: "text",      question: "What is your business model in one sentence?",                                      placeholder: "e.g. SaaS subscription, one-time license, commission…" },
-      { id: 4,  key: "idealeKlant",      type: "text",      question: "Who is your ideal customer?",                                                       hint: "Be as specific as possible", placeholder: "e.g. CFO at a B2B scale-up with 50–200 employees…" },
+      { id: 4,  key: "idealeKlant",      type: "text",      question: "Who is your ideal customer?",                                                       hint: "Be as specific as possible", placeholder: "e.g. CFO at a B2B scale-up with 50-200 employees…" },
       { id: 5,  key: "kernbelofte",      type: "text",      question: "What is your core promise to that customer?",                                       placeholder: "What outcome or transformation do you offer?" },
-      { id: 6,  key: "concurrenten",     type: "text",      question: "Who are your main competitors, and how do you differentiate?",                      placeholder: "Name 1–3 competitors and your differentiators…" },
+      { id: 6,  key: "concurrenten",     type: "text",      question: "Who are your main competitors, and how do you differentiate?",                      placeholder: "Name 1-3 competitors and your differentiators…" },
       { id: 7,  key: "groeivraagstuk",   type: "text",      question: "What is your biggest marketing or growth challenge right now?",                     placeholder: "What are you struggling with?" },
       { id: 8,  key: "geprobeerd",       type: "text",      question: "What have you already tried, and what were the results?",                           placeholder: "Which actions, campaigns or experiments?" },
       { id: 9,  key: "gewenstResultaat", type: "text",      question: "What would a good outcome of this conversation look like?",                         placeholder: "What do you want to take away from this conversation?" },
@@ -133,17 +220,17 @@
       { id: 11, key: "budget",           type: "choice",    question: "What is the available marketing and sales budget per month?",                       hint: "Rough estimate", options: ["< €500", "€500 – €2,000", "€2,000 – €5,000", "€5,000 – €10,000", "> €10,000", "Not yet determined"] },
       { id: 12, key: "team",             type: "multipart", question: "How many people are on the team?",                                                  hint: "And is there a dedicated marketing or sales person?",
         parts: [
-          { key: "teamSize",  label: "Team size",                              options: ["1–3 people", "4–10 people", "11–25 people", "25+ people"] },
+          { key: "teamSize",  label: "Team size",                              options: ["1-3 people", "4-10 people", "11-25 people", "25+ people"] },
           { key: "dedicated", label: "Dedicated marketing/sales present?",     options: ["Yes", "No, founder handles it", "Partly (freelancer/external)"] },
         ],
       },
     ] : [
-      { id: 1,  key: "bedrijf",          type: "text",      question: "Wat doet jullie bedrijf, en voor wie?",                                             hint: "1–3 zinnen",             placeholder: "Beschrijf jullie product of dienst en de doelgroep…" },
+      { id: 1,  key: "bedrijf",          type: "text",      question: "Wat doet jullie bedrijf, en voor wie?",                                             hint: "1-3 zinnen",             placeholder: "Beschrijf jullie product of dienst en de doelgroep…" },
       { id: 2,  key: "fase",             type: "choice",    question: "In welke fase zitten jullie?",                                                      options: ["Pre-seed", "Seed", "Early traction", "Scale-up"] },
-      { id: 3,  key: "verdienmodel",     type: "text",      question: "Wat is jullie verdienmodel in één zin?",                                            placeholder: "Bijv. SaaS-abonnement, eenmalige licentie, commissie…" },
-      { id: 4,  key: "idealeKlant",      type: "text",      question: "Wie is jullie ideale klant?",                                                       hint: "Zo concreet mogelijk",   placeholder: "Bijv. CFO bij een B2B scale-up van 50–200 medewerkers…" },
+      { id: 3,  key: "verdienmodel",     type: "text",      question: "Wat is jullie verdienmodel in één zin?",                                  placeholder: "Bijv. SaaS-abonnement, eenmalige licentie, commissie…" },
+      { id: 4,  key: "idealeKlant",      type: "text",      question: "Wie is jullie ideale klant?",                                                       hint: "Zo concreet mogelijk",   placeholder: "Bijv. CFO bij een B2B scale-up van 50-200 medewerkers…" },
       { id: 5,  key: "kernbelofte",      type: "text",      question: "Wat is jullie kernbelofte aan die klant?",                                          placeholder: "Welke uitkomst of transformatie bied je?" },
-      { id: 6,  key: "concurrenten",     type: "text",      question: "Wie zijn jullie belangrijkste concurrenten, en waarin onderscheiden jullie je?",    placeholder: "Noem 1–3 concurrenten en jullie onderscheid…" },
+      { id: 6,  key: "concurrenten",     type: "text",      question: "Wie zijn jullie belangrijkste concurrenten, en waarin onderscheiden jullie je?",    placeholder: "Noem 1-3 concurrenten en jullie onderscheid…" },
       { id: 7,  key: "groeivraagstuk",   type: "text",      question: "Wat is op dit moment jullie grootste marketing- of groeivraagstuk?",               placeholder: "Waar loop je tegenaan?" },
       { id: 8,  key: "geprobeerd",       type: "text",      question: "Wat hebben jullie al geprobeerd, en wat was het resultaat?",                        placeholder: "Welke acties, campagnes of experimenten?" },
       { id: 9,  key: "gewenstResultaat", type: "text",      question: "Wat zou een goed resultaat zijn van dit gesprek?",                                  placeholder: "Wat wil je meenemen na dit gesprek?" },
@@ -151,7 +238,7 @@
       { id: 11, key: "budget",           type: "choice",    question: "Wat is het beschikbare marketing- en salesbudget per maand?",                      hint: "Globale schatting", options: ["< €500", "€500 – €2.000", "€2.000 – €5.000", "€5.000 – €10.000", "> €10.000", "Nog niet bepaald"] },
       { id: 12, key: "team",             type: "multipart", question: "Hoeveel mensen telt het team?",                                                     hint: "En is er een dedicated marketing- of salespersoon aanwezig?",
         parts: [
-          { key: "teamSize",  label: "Teamgrootte",                            options: ["1–3 mensen", "4–10 mensen", "11–25 mensen", "25+ mensen"] },
+          { key: "teamSize",  label: "Teamgrootte",                            options: ["1-3 mensen", "4-10 mensen", "11-25 mensen", "25+ mensen"] },
           { key: "dedicated", label: "Dedicated marketing/sales aanwezig?",    options: ["Ja", "Nee, founder doet het zelf", "Deels (freelancer/extern)"] },
         ],
       },
@@ -249,6 +336,29 @@
 
     const C = { white:"#ffffff", bg:"#f5f5f7", ink:"#1d1d1f", mid:"#6e6e73", light:"#aeaeb2", border:"#e5e5ea", red:"#c0392b" };
 
+    // ─── TOPIC CONFIG ────────────────────────────────────────────────────────
+
+    const TOPICS = ["Propositie","GTM-gereedheid","Doelgroepfocus","Merkidentiteit","Sales-alignment","Schaalbaarheid"];
+    const BENCHMARK = [55, 58, 50, 60, 55, 52];
+
+    const TOPIC_CFG = {
+      "Propositie":      { emoji:"🎯", color:"#16a34a", bg:"#f0fdf4" },
+      "GTM-gereedheid":  { emoji:"🧭", color:"#0891b2", bg:"#ecfeff" },
+      "Doelgroepfocus":  { emoji:"👥", color:"#7c3aed", bg:"#f5f3ff" },
+      "Merkidentiteit":  { emoji:"💎", color:"#d97706", bg:"#fffbeb" },
+      "Sales-alignment": { emoji:"💼", color:"#2563eb", bg:"#eff6ff" },
+      "Schaalbaarheid":  { emoji:"📈", color:"#059669", bg:"#f0fdf4" },
+    };
+
+    const TOPIC_QUESTIONS = {
+      "Propositie":      "Wat is jullie kernbelofte, en voor wie los je welk probleem op?",
+      "GTM-gereedheid":  "Hoe bereik je vandaag je eerste klanten, en wat werkt al herhaalbaar?",
+      "Doelgroepfocus":  "Wie is jullie ideale klant, en hoe concreet kun je die omschrijven?",
+      "Merkidentiteit":  "Hoe willen jullie overkomen bij klanten, en wat maakt jullie herkenbaar?",
+      "Sales-alignment": "Hoe sluit jullie verhaal aan op hoe jullie het in de praktijk verkopen?",
+      "Schaalbaarheid":  "Wat zijn de bottlenecks als jullie morgen 10x meer klanten zouden hebben?",
+    };
+
     // ─── DIAGRAM ──────────────────────────────────────────────────────────────
 
     const DIAGRAM_PROMPT = (conversation) =>
@@ -260,45 +370,75 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
 {
   "bedrijf": "korte naam of omschrijving van het bedrijf",
   "assen": [
-    { "naam": "Propositie", "score": 0, "toelichting": "één zin" },
-    { "naam": "GTM-gereedheid", "score": 0, "toelichting": "één zin" },
-    { "naam": "Doelgroepfocus", "score": 0, "toelichting": "één zin" },
-    { "naam": "Merkidentiteit", "score": 0, "toelichting": "één zin" },
-    { "naam": "Sales-alignment", "score": 0, "toelichting": "één zin" },
-    { "naam": "Schaalbaarheid", "score": 0, "toelichting": "één zin" }
+    { "naam": "Propositie", "score": 0, "toelichting": "een zin" },
+    { "naam": "GTM-gereedheid", "score": 0, "toelichting": "een zin" },
+    { "naam": "Doelgroepfocus", "score": 0, "toelichting": "een zin" },
+    { "naam": "Merkidentiteit", "score": 0, "toelichting": "een zin" },
+    { "naam": "Sales-alignment", "score": 0, "toelichting": "een zin" },
+    { "naam": "Schaalbaarheid", "score": 0, "toelichting": "een zin" }
   ]
 }`;
 
-    function RadarChart({ data, size = 280 }) {
+    // ─── RADAR CHART ─────────────────────────────────────────────────────────
+
+    function RadarChart({ data, benchmark = null, size = 280, maxScore = 10, svgClass = "radar-svg", showLabels = true }) {
       const n = data.length;
       const cx = size / 2, cy = size / 2, r = size * 0.32;
       const ang = (i) => (2 * Math.PI * i / n) - Math.PI / 2;
-      const pt  = (i, s) => ({ x: cx + r * (s / 10) * Math.cos(ang(i)), y: cy + r * (s / 10) * Math.sin(ang(i)) });
+      const pt  = (i, s) => ({ x: cx + r * (s / maxScore) * Math.cos(ang(i)), y: cy + r * (s / maxScore) * Math.sin(ang(i)) });
 
       const gridLevels = [0.25, 0.5, 0.75, 1].map(ratio =>
         data.map((_, i) => `${cx + r * ratio * Math.cos(ang(i))},${cy + r * ratio * Math.sin(ang(i))}`).join(" ")
       );
-      const dataPoints = data.map((d, i) => { const p = pt(i, d.score); return `${p.x},${p.y}`; }).join(" ");
+      const dataPoints  = data.map((d, i) => { const p = pt(i, d.score); return `${p.x},${p.y}`; }).join(" ");
+      const benchPoints = benchmark ? benchmark.map((s, i) => { const p = pt(i, s); return `${p.x},${p.y}`; }).join(" ") : null;
+      const hasData  = data.some(d => d.score > 0);
+      const isGreen  = maxScore === 100;
 
       return (
-        <svg className="radar-svg" width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display:"block", margin:"0 auto" }}>
+        <svg className={svgClass} width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display:"block", margin:"0 auto" }}>
           {gridLevels.map((pts, l) => <polygon key={l} points={pts} fill="none" stroke="#e5e5ea" strokeWidth="1" />)}
           {data.map((_, i) => <line key={i} x1={cx} y1={cy} x2={cx + r * Math.cos(ang(i))} y2={cy + r * Math.sin(ang(i))} stroke="#e5e5ea" strokeWidth="1" />)}
-          <polygon points={dataPoints} fill="rgba(29,29,31,0.08)" stroke="#1d1d1f" strokeWidth="2" />
-          {data.map((d, i) => { const p = pt(i, d.score); return <circle key={i} cx={p.x} cy={p.y} r="4" fill="#1d1d1f" />; })}
-          {data.map((d, i) => {
+          {benchPoints && <polygon points={benchPoints} fill="rgba(249,115,22,0.08)" stroke="#f97316" strokeWidth="1.5" strokeDasharray="3,2" />}
+          {hasData && <polygon points={dataPoints} fill={isGreen ? "rgba(34,197,94,0.15)" : "rgba(29,29,31,0.08)"} stroke={isGreen ? "#22c55e" : "#1d1d1f"} strokeWidth="2" />}
+          {hasData && data.map((d, i) => { const p = pt(i, d.score); return <circle key={i} cx={p.x} cy={p.y} r={isGreen ? 3 : 4} fill={isGreen ? "#22c55e" : "#1d1d1f"} />; })}
+          {showLabels && data.map((d, i) => {
             const lr = r + 28;
             const x = cx + lr * Math.cos(ang(i)), y = cy + lr * Math.sin(ang(i));
             return (
               <g key={i}>
-                <text x={x} y={y - 5}  textAnchor="middle" fontSize="9"  fontFamily="Inter,sans-serif" fill="#6e6e73">{d.naam}</text>
-                <text x={x} y={y + 8}  textAnchor="middle" fontSize="11" fontFamily="Inter,sans-serif" fontWeight="600" fill="#1d1d1f">{d.score}</text>
+                <text x={x} y={y - 5} textAnchor="middle" fontSize="9"  fontFamily="Inter,sans-serif" fill="#6e6e73">{d.naam}</text>
+                <text x={x} y={y + 8} textAnchor="middle" fontSize="11" fontFamily="Inter,sans-serif" fontWeight="600" fill="#1d1d1f">{d.score}</text>
               </g>
             );
           })}
         </svg>
       );
     }
+
+    // ─── MATURITY CIRCLE ─────────────────────────────────────────────────────
+
+    function MaturityCircle({ score }) {
+      const r = 34, cx = 44, cy = 44, circ = 2 * Math.PI * r;
+      const filled = score != null ? (score / 100) * circ : 0;
+      return (
+        <svg width="88" height="88" viewBox="0 0 88 88">
+          <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e5e5ea" strokeWidth="7" />
+          {score != null && (
+            <circle cx={cx} cy={cy} r={r} fill="none" stroke="#22c55e" strokeWidth="7"
+              strokeDasharray={`${filled} ${circ}`} strokeLinecap="round"
+              transform="rotate(-90 44 44)"
+            />
+          )}
+          <text x={cx} y={cy - 3} textAnchor="middle" fontSize="18" fontWeight="700" fill="#1d1d1f" fontFamily="Inter,sans-serif">
+            {score != null ? score : "—"}
+          </text>
+          <text x={cx} y={cy + 13} textAnchor="middle" fontSize="9" fill="#aeaeb2" fontFamily="Inter,sans-serif">/100</text>
+        </svg>
+      );
+    }
+
+    // ─── ICONS ───────────────────────────────────────────────────────────────
 
     const MicIcon = ({ on }) => (
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -358,12 +498,10 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
 
       return (
         <div style={{ minHeight:"100dvh", display:"flex", flexDirection:"column", background:C.white }}>
-
-          {/* Progress header */}
           <div style={{ padding:"16px 24px", borderBottom:`1px solid ${C.border}`, flexShrink:0 }}>
             <div style={{ maxWidth:"560px", margin:"0 auto" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"10px" }}>
-                <span style={{ fontSize:"12px", letterSpacing:"1px", color:C.light, fontWeight:500 }}>tdme · GTM Agent <span style={{ fontSize:"11px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:"4px", padding:"1px 6px", marginLeft:"2px" }}>v0.8</span></span>
+                <span style={{ fontSize:"12px", letterSpacing:"1px", color:C.light, fontWeight:500 }}>tdme · GTM Agent</span>
                 <span style={{ fontSize:"12px", color:C.mid, fontWeight:500 }}>{current + 1} / {total}</span>
               </div>
               <div style={{ height:"3px", background:C.bg, borderRadius:"2px", overflow:"hidden" }}>
@@ -372,18 +510,14 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
             </div>
           </div>
 
-          {/* Question card */}
           <div key={animKey} className="slide-in"
             style={{ flex:1, display:"flex", flexDirection:"column", justifyContent:"center", padding:"32px 24px", maxWidth:"560px", width:"100%", margin:"0 auto", gap:"24px" }}>
-
             <div>
               <div style={{ fontSize:"11px", fontWeight:600, letterSpacing:"1.5px", color:C.light, textTransform:"uppercase", marginBottom:"10px" }}>{t.questionLabel(current + 1)}</div>
               <h2 style={{ fontSize:"clamp(19px,3vw,25px)", fontWeight:600, color:C.ink, lineHeight:1.3, letterSpacing:"-0.3px" }}>{q.question}</h2>
               {q.hint && <p style={{ fontSize:"14px", color:C.mid, marginTop:"6px" }}>{q.hint}</p>}
             </div>
-
             <div style={{ display:"flex", flexDirection:"column", gap:"16px" }}>
-
               {q.type === "text" && (
                 <textarea ref={textareaRef}
                   value={answers[q.key] || ""}
@@ -394,7 +528,6 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
                   style={{ width:"100%", padding:"14px 16px", fontSize:"15px", fontFamily:"Inter,-apple-system,sans-serif", border:`1px solid ${C.border}`, borderRadius:"12px", background:C.bg, color:C.ink, resize:"none", lineHeight:1.6 }}
                 />
               )}
-
               {q.type === "choice" && (
                 <div style={{ display:"flex", flexWrap:"wrap", gap:"8px" }}>
                   {q.options.map(opt => (
@@ -402,7 +535,6 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
                   ))}
                 </div>
               )}
-
               {q.type === "multipart" && q.parts.map((part, pi) => (
                 <div key={pi}>
                   <p style={{ fontSize:"13px", fontWeight:500, color:C.mid, marginBottom:"8px" }}>{part.label}</p>
@@ -413,11 +545,9 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
                   </div>
                 </div>
               ))}
-
             </div>
           </div>
 
-          {/* Nav footer */}
           <div style={{ padding:"16px 24px", borderTop:`1px solid ${C.border}`, flexShrink:0 }}>
             <div style={{ maxWidth:"560px", margin:"0 auto", display:"flex", gap:"10px", justifyContent:"space-between" }}>
               <button onClick={goPrev} disabled={current === 0}
@@ -451,10 +581,13 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
       const [summaryLoading, setSummaryLoading] = useState(false);
       const [diagram,        setDiagram]        = useState(null);
       const [genDiagram,     setGenDiagram]     = useState(false);
-
-      const TOPICS = ["Propositie","GTM-gereedheid","Doelgroepfocus","Merkidentiteit","Sales-alignment","Schaalbaarheid"];
-      const [activeTopic, setActiveTopic] = useState(null);
-      const [doneTopics,  setDoneTopics]  = useState([]);
+      const [companyName,    setCompanyName]    = useState("");
+      const [activeTopic,    setActiveTopic]    = useState(null);
+      const [doneTopics,     setDoneTopics]     = useState([]);
+      const [topicScores,    setTopicScores]    = useState({});
+      const [maturity,       setMaturity]       = useState(null);
+      const [insights,       setInsights]       = useState([]);
+      const [channels,       setChannels]       = useState(null);
 
       const normTopic  = (s) => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
       const matchTopic = (raw) => { const r = normTopic(raw); return TOPICS.find(t => normTopic(t) === r) || null; };
@@ -464,14 +597,74 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
         if (!m) return null;
         const activeRaw = (m[1].match(/active=([^;]*)/) || [])[1] || "";
         const doneRaw   = ((m[1].match(/done=([^;]*)/) || [])[1] || "").split(",");
-        return { active: matchTopic(activeRaw), done: doneRaw.map(matchTopic).filter(Boolean) };
+        const scoreRaw  = (m[1].match(/score=([^;]*)/) || [])[1] || "";
+        const matRaw    = (m[1].match(/maturity=([^;]*)/) || [])[1] || "";
+        const scores = {};
+        if (scoreRaw) {
+          scoreRaw.split(",").forEach(pair => {
+            const idx = pair.lastIndexOf(":");
+            if (idx < 1) return;
+            const matched = matchTopic(pair.slice(0, idx));
+            const val = parseInt(pair.slice(idx + 1), 10);
+            if (matched && !isNaN(val)) scores[matched] = val;
+          });
+        }
+        return {
+          active: matchTopic(activeRaw),
+          done: doneRaw.map(matchTopic).filter(Boolean),
+          scores,
+          maturity: matRaw ? parseInt(matRaw, 10) : null,
+        };
       };
-      const stripProgress = (text) => text.replace(/\s*<<TDME:[^>]*>>\s*$/, "").trim();
-      const applyProgress = (reply) => {
+
+      const parseInsights = (text) => {
+        const m = text.match(/<<TDME-INSIGHTS:([^>]*)>>/);
+        if (!m) return [];
+        const result = [];
+        const pos = (m[1].match(/positive=([^;]*)/) || [])[1];
+        const att = (m[1].match(/attention=([^;]*)/) || [])[1];
+        const inf = (m[1].match(/info=([^;]*)/) || [])[1];
+        if (pos) result.push({ type:"positive",  text: pos });
+        if (att) result.push({ type:"attention", text: att });
+        if (inf) result.push({ type:"info",      text: inf });
+        return result;
+      };
+
+      const parseChannels = (text) => {
+        const m = text.match(/<<TDME-CHANNELS:([^>]*)>>/);
+        if (!m) return null;
+        const inner   = m[1];
+        const noteRaw = (inner.match(/note=([^;]*)/) || [])[1] || "";
+        const chanPart = inner.replace(/note=[^;]*/g, "").replace(/^;|;$/g, "").trim();
+        if (!chanPart) return null;
+        const items = chanPart.split(",").map(pair => {
+          const idx = pair.lastIndexOf(":");
+          if (idx < 1) return null;
+          const name  = pair.slice(0, idx).trim();
+          const score = parseInt(pair.slice(idx + 1), 10);
+          return isNaN(score) ? null : { name, score };
+        }).filter(Boolean);
+        return items.length ? { items, note: noteRaw } : null;
+      };
+
+      const stripAll = (text) => text
+        .replace(/\s*<<TDME:[^>]*>>/g, "")
+        .replace(/\s*<<TDME-INSIGHTS:[^>]*>>/g, "")
+        .replace(/\s*<<TDME-CHANNELS:[^>]*>>/g, "")
+        .trim();
+
+      const applyAll = (reply) => {
         const p = parseProgress(reply);
-        if (!p) return;
-        if (p.active) setActiveTopic(p.active);
-        if (p.done.length) setDoneTopics(prev => Array.from(new Set([...prev, ...p.done])));
+        if (p) {
+          if (p.active) setActiveTopic(p.active);
+          if (p.done.length) setDoneTopics(prev => Array.from(new Set([...prev, ...p.done])));
+          if (Object.keys(p.scores).length) setTopicScores(prev => ({ ...prev, ...p.scores }));
+          if (p.maturity != null) setMaturity(p.maturity);
+        }
+        const ins = parseInsights(reply);
+        if (ins.length) setInsights(prev => [...prev, ...ins].slice(-8));
+        const ch = parseChannels(reply);
+        if (ch) setChannels(ch);
       };
 
       const bottomRef  = useRef(null);
@@ -540,8 +733,8 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
         const userMsg = { role:"user", content: text };
         try {
           const reply = await callClaude([userMsg]);
-          applyProgress(reply);
-          const initial = [userMsg, { role:"assistant", content:stripProgress(reply) }];
+          applyAll(reply);
+          const initial = [userMsg, { role:"assistant", content:stripAll(reply) }];
           setMessages(initial);
           saveConversation(initial);
         } catch(err) {
@@ -552,13 +745,14 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
       };
 
       const completeIntake = async (answers) => {
+        setCompanyName(answers.bedrijf || "");
         setPhase("chat");
         setLoading(true);
         const userMsg = { role:"user", content: buildIntakeMessage(answers, lang) };
         try {
           const reply = await callClaude([userMsg]);
-          applyProgress(reply);
-          const initial = [userMsg, { role:"assistant", content:stripProgress(reply) }];
+          applyAll(reply);
+          const initial = [userMsg, { role:"assistant", content:stripAll(reply) }];
           setMessages(initial);
           saveConversation(initial);
         } catch(e) {
@@ -576,8 +770,8 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
         setMessages(updated); setInput(""); setInterim(""); setAttachment(null); setLoading(true); setDiagram(null);
         try {
           const reply = await callClaude(updated);
-          applyProgress(reply);
-          const next = [...updated, { role:"assistant", content:stripProgress(reply) }];
+          applyAll(reply);
+          const next = [...updated, { role:"assistant", content:stripAll(reply) }];
           setMessages(next);
           saveConversation(next);
         } catch(e) {
@@ -602,36 +796,27 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
         ctx.scale(dpr, dpr);
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, W, H);
-
-        // header
         ctx.font = "400 11px -apple-system,sans-serif";
         ctx.fillStyle = "#aeaeb2";
         ctx.textAlign = "center";
         ctx.fillText(`tdme GTM Agent  -  ${diagram.bedrijf}`, W / 2, 28);
-
         const img = new Image();
         img.onload = () => {
           ctx.drawImage(img, (W - chartSize) / 2, 48, chartSize, chartSize);
-
-          // find widest axis name to set toel start dynamically
           ctx.font = "500 13px -apple-system,sans-serif";
           const nameColW = Math.max(...diagram.assen.map(as => ctx.measureText(as.naam).width));
           const xScore = 40, xNaam = 76, xToel = xNaam + nameColW + 20;
           const maxToel = W - xToel - 32;
-
           const listTop = 48 + chartSize + 28;
           diagram.assen.forEach((as, i) => {
             const y = listTop + i * rowH;
             ctx.textAlign = "left";
-
             ctx.font = "600 13px -apple-system,sans-serif";
             ctx.fillStyle = "#1d1d1f";
             ctx.fillText(String(as.score), xScore, y);
-
             ctx.font = "500 13px -apple-system,sans-serif";
             ctx.fillStyle = "#1d1d1f";
             ctx.fillText(as.naam, xNaam, y);
-
             ctx.font = "400 12px -apple-system,sans-serif";
             ctx.fillStyle = "#6e6e73";
             let toel = as.toelichting;
@@ -639,7 +824,6 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
             if (toel !== as.toelichting) toel += "...";
             ctx.fillText("- " + toel, xToel, y);
           });
-
           canvas.toBlob(blob => {
             const a = document.createElement("a");
             a.href = URL.createObjectURL(blob);
@@ -672,9 +856,8 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
 
       const generateSummary = async () => {
         setSummaryLoading(true);
-        const summaryPrompt = T[lang].summaryPrompt;
         try {
-          const summary = await callClaude([...messages, { role:"user", content: summaryPrompt }], 2500);
+          const summary = await callClaude([...messages, { role:"user", content: T[lang].summaryPrompt }], 2500);
           downloadMd([{ role:"assistant", content: summary }], "tdme-samenvatting", T[lang].downloadSummaryTitle);
         } catch(e) {
           alert(`Fout bij genereren samenvatting: ${e.message}`);
@@ -707,14 +890,13 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
       if (phase === "access") return (
         <div style={{ minHeight:"100dvh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"32px", padding:"48px 24px", background:C.white }}>
           <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:"10px" }}>
-            <p style={{ fontSize:"12px", letterSpacing:"1px", color:C.light, fontWeight:500 }}>tdme · GTM Agent <span style={{ fontSize:"11px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:"4px", padding:"1px 6px", marginLeft:"2px" }}>v0.8</span></p>
+            <p style={{ fontSize:"12px", letterSpacing:"1px", color:C.light, fontWeight:500 }}>tdme · GTM Agent</p>
             <h1 style={{ fontSize:"clamp(28px,4vw,44px)", fontWeight:600, letterSpacing:"-1px", color:C.ink, lineHeight:1.1, textAlign:"center" }}>{T[lang].headline}</h1>
             <p style={{ fontSize:"16px", color:C.mid, textAlign:"center", maxWidth:"320px", lineHeight:1.55, marginTop:"4px" }}>
               {T[lang].subtitle}
             </p>
           </div>
 
-          {/* Language toggle */}
           <div style={{ display:"flex", gap:"6px", background:C.bg, borderRadius:"980px", padding:"4px" }}>
             {["nl", "en"].map(l => (
               <button key={l} onClick={() => setLang(l)}
@@ -736,7 +918,7 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
             </button>
             {code.trim().toLowerCase() === ACCESS_CODE && (
               <label style={{ fontSize:"13px", color:C.mid, cursor:"pointer", textDecoration:"underline", textDecorationColor:C.border }}>
-                {lang === "en" ? "Skip intake — upload .md file" : "Intake overslaan — upload .md bestand"}
+                {lang === "en" ? "Skip intake - upload .md file" : "Intake overslaan - upload .md bestand"}
                 <input type="file" accept=".md,.txt" onChange={uploadIntakeMd} style={{ display:"none" }} />
               </label>
             )}
@@ -748,167 +930,263 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
       if (phase === "intake") return <IntakeForm onComplete={completeIntake} lang={lang} />;
 
       // ── CHAT ──────────────────────────────────────────────────────────────
-      return (
-        <div className="tdme-layout">
-          <aside className="tdme-side">
-            <div className="tdme-side-label">Onderwerpen</div>
-            <div className="tdme-topics">
-              {TOPICS.map(t => {
-                const done = doneTopics.includes(t);
-                const active = activeTopic === t;
-                return (
-                  <div key={t} className="tdme-topic" style={{ background: active ? C.bg : "transparent" }}>
-                    <span style={{ width:"16px", height:"16px", borderRadius:"50%", flexShrink:0, border:`1.5px solid ${done || active ? C.ink : C.border}`, background:done ? C.ink : "transparent", display:"grid", placeItems:"center" }}>
-                      {done && <svg width="9" height="9" viewBox="0 0 12 12"><path d="M2.5 6.2l2.2 2.2 4.8-5" stroke="#fff" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>}
-                    </span>
-                    <span style={{ fontSize:"13px", fontWeight:active ? 600 : 500, color:done ? C.light : active ? C.ink : C.mid }}>{t}</span>
-                  </div>
-                );
-              })}
-            </div>
-            <p className="tdme-side-foot">De agent loopt deze onderwerpen langs en sluit af met een analyse.</p>
-          </aside>
-          <div className="tdme-main">
-        <div style={{ height:"100%", display:"flex", flexDirection:"column", background:C.white }}>
+      const radarDashData = TOPICS.map(t => ({ naam: t, score: topicScores[t] || 0 }));
 
-          {/* Header */}
-          <div style={{ padding:"12px 20px", borderBottom:`1px solid ${C.border}`, display:"flex", justifyContent:"space-between", alignItems:"center", flexShrink:0, position:"sticky", top:0, background:C.white, zIndex:10 }}>
-            <span style={{ fontSize:"13px", color:C.light, fontWeight:500 }}>tdme · GTM Agent <span style={{ fontSize:"11px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:"4px", padding:"1px 6px", marginLeft:"4px", letterSpacing:"0" }}>v0.8</span></span>
-            <div style={{ display:"flex", gap:"8px" }}>
+      const getTopicStatus = (t) => {
+        if (doneTopics.includes(t)) return "done";
+        if (t === activeTopic) return "active";
+        return "wachtend";
+      };
+
+      return (
+        <div className="agent-app">
+
+          {/* Topbar */}
+          <header className="agent-topbar">
+            <div className="logo-wrap">
+              <div className="logo-dot" />
+              <span className="logo-name">tdme</span>
+              <span className="logo-sub">GTM Agent</span>
+            </div>
+            <div className="topbar-actions">
               {messages.length >= 6 && (
                 <button onClick={generateDiagram} disabled={genDiagram}
-                  style={{ fontSize:"12px", color:C.ink, background:"transparent", border:`1px solid ${C.ink}`, borderRadius:"980px", padding:"5px 12px", cursor:genDiagram ? "not-allowed" : "pointer", opacity:genDiagram ? 0.5 : 1 }}>
-                  {genDiagram ? (lang === "en" ? "Analysing…" : "Analyseren…") : (lang === "en" ? "Analyse" : "Analyseer")}
+                  style={{ fontSize:"13px", color:C.ink, background:"transparent", border:`1.5px solid ${C.ink}`, borderRadius:"980px", padding:"6px 14px", cursor:genDiagram?"default":"pointer", fontWeight:500, opacity:genDiagram?0.5:1 }}>
+                  {genDiagram ? "Analyseren…" : "Analyseer"}
                 </button>
               )}
               <button onClick={generateSummary} disabled={summaryLoading || messages.length < 2}
-                style={{ fontSize:"12px", color:(summaryLoading || messages.length < 2) ? C.light : C.mid, background:"transparent", border:`1px solid ${C.border}`, borderRadius:"980px", padding:"5px 12px", cursor:(summaryLoading || messages.length < 2) ? "not-allowed" : "pointer" }}>
+                style={{ fontSize:"13px", color:(summaryLoading||messages.length<2)?C.light:C.mid, background:"transparent", border:`1px solid ${C.border}`, borderRadius:"980px", padding:"6px 14px", cursor:(summaryLoading||messages.length<2)?"default":"pointer" }}>
                 {summaryLoading ? T[lang].summaryLoading : T[lang].summaryBtn}
               </button>
               <button onClick={() => downloadMd(messages.slice(1), "tdme-gesprek", T[lang].downloadTitle)}
-                style={{ fontSize:"12px", color:C.mid, background:"transparent", border:`1px solid ${C.border}`, borderRadius:"980px", padding:"5px 12px", cursor:"pointer" }}>
+                style={{ fontSize:"13px", color:C.white, background:C.ink, border:"none", borderRadius:"980px", padding:"6px 16px", cursor:"pointer", fontWeight:500 }}>
                 {T[lang].downloadBtn}
               </button>
             </div>
-          </div>
+          </header>
 
-          {/* Messages */}
-          <div style={{ flex:1, overflow:"auto", padding:"20px 24px", display:"flex", flexDirection:"column", gap:"14px", maxWidth:"680px", width:"100%", margin:"0 auto", alignSelf:"center" }}>
-            {messages.map((msg, i) => {
-              if (i === 0 && msg.role === "user") return null;
-              const attachLabel = msg.role === "user" ? getAttachmentLabel(msg) : null;
-              const displayText = getDisplayText(msg);
-              const isLast = i === messages.length - 1;
-              return msg.role === "assistant" ? (
-                <div key={i} ref={isLast ? lastMsgRef : null} className="msg-enter" style={{ alignSelf:"flex-start", maxWidth:"85%" }}>
-                  <div style={{ background:C.bg, padding:"12px 16px", borderRadius:"4px 18px 18px 18px", fontSize:"15px", lineHeight:1.65, color:C.ink }}>
-                    {fmt(displayText)}
-                  </div>
-                </div>
-              ) : (
-                <div key={i} className="msg-enter" style={{ alignSelf:"flex-end", maxWidth:"75%", display:"flex", flexDirection:"column", gap:"4px", alignItems:"flex-end" }}>
-                  {attachLabel && (
-                    <div style={{ fontSize:"12px", color:C.mid, background:C.bg, border:`1px solid ${C.border}`, borderRadius:"980px", padding:"3px 10px" }}>
-                      {attachLabel}
-                    </div>
-                  )}
-                  {displayText && (
-                    <div style={{ background:C.ink, padding:"12px 16px", borderRadius:"18px 4px 18px 18px", fontSize:"15px", lineHeight:1.65, color:C.white }}>
-                      {fmt(displayText)}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-            {loading && (
-              <div style={{ alignSelf:"flex-start" }}>
-                <div style={{ background:C.bg, padding:"14px 18px", borderRadius:"4px 18px 18px 18px", display:"inline-flex", gap:"4px", alignItems:"center" }}>
-                  {["0s","0.2s","0.4s"].map(d => (
-                    <span key={d} style={{ width:"5px", height:"5px", borderRadius:"50%", background:C.light, display:"inline-block", animation:`bounce 1.2s ${d} infinite ease-in-out` }} />
-                  ))}
-                </div>
-              </div>
-            )}
-            {diagram && !diagram.error && (
-              <div className="msg-enter" style={{ background:C.white, border:`1px solid ${C.border}`, borderRadius:"16px", padding:"20px", marginTop:"8px", position:"relative" }}>
-                <button onClick={() => setDiagram(null)}
-                  style={{ position:"absolute", top:"12px", right:"14px", background:"transparent", border:"none", fontSize:"16px", color:C.light, cursor:"pointer", lineHeight:1 }}>×</button>
-                <p style={{ fontSize:"12px", letterSpacing:"1px", textTransform:"uppercase", color:C.light, marginBottom:"16px", textAlign:"center" }}>
-                  {lang === "en" ? "Analysis" : "Analyse"} · {diagram.bedrijf}
-                </p>
-                <RadarChart data={diagram.assen} />
-                <div style={{ marginTop:"20px", display:"flex", flexDirection:"column", gap:"8px" }}>
-                  {diagram.assen.map((as, i) => (
-                    <div key={i} style={{ display:"flex", gap:"10px", alignItems:"flex-start" }}>
-                      <span style={{ fontSize:"13px", fontWeight:600, color:C.ink, minWidth:"28px" }}>{as.score}</span>
-                      <div>
-                        <span style={{ fontSize:"13px", fontWeight:500, color:C.ink }}>{as.naam}</span>
-                        <span style={{ fontSize:"13px", color:C.mid }}> — {as.toelichting}</span>
+          <div className="agent-body">
+
+            {/* Journey panel */}
+            <aside className="journey-panel">
+              <div className="journey-scroll">
+                <div className="journey-hdr">GTM Journey</div>
+                <div className="journey-list">
+                  {TOPICS.map(t => {
+                    const status = getTopicStatus(t);
+                    const cfg = TOPIC_CFG[t];
+                    const score = topicScores[t];
+                    return (
+                      <div key={t} className={`journey-item ${status}`}>
+                        <div className="j-icon" style={{ background: status === "wachtend" ? "#f0f0f5" : cfg.bg, color: status === "wachtend" ? C.light : cfg.color }}>
+                          {status === "done" ? "✓" : status === "active" ? cfg.emoji : "·"}
+                        </div>
+                        <div className="j-meta">
+                          <div className={`j-name${status === "wachtend" ? " dim" : ""}`}>{t}</div>
+                          <div className="j-status">
+                            {status === "done" && (
+                              <span className="j-score">{score != null ? `${score}/100` : "Afgerond"}</span>
+                            )}
+                            {status === "active" && (
+                              <span style={{ color:"#0891b2", fontWeight:500 }}>In progress</span>
+                            )}
+                            {status === "wachtend" && (
+                              <span style={{ color:C.light }}>Wachtend</span>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-                <div style={{ marginTop:"16px", textAlign:"center" }}>
-                  <button onClick={downloadDiagram}
-                    style={{ fontSize:"12px", color:C.mid, background:"transparent", border:`1px solid ${C.border}`, borderRadius:"980px", padding:"5px 14px", cursor:"pointer" }}>
-                    {lang === "en" ? "Download PNG" : "Download PNG"}
-                  </button>
+                    );
+                  })}
                 </div>
               </div>
-            )}
-            {diagram?.error && (
-              <p style={{ fontSize:"13px", color:C.mid, fontStyle:"italic" }}>{diagram.error}</p>
-            )}
-            <div ref={bottomRef} />
-          </div>
-
-          {/* Input area */}
-          <div style={{ borderTop:`1px solid ${C.border}`, padding:"10px 20px", background:C.white, flexShrink:0 }}>
-            <div style={{ maxWidth:"680px", width:"100%", margin:"0 auto" }}>
-              {(attachment || fileErr) && (
-                <div style={{ marginBottom:"8px", display:"flex", alignItems:"center", gap:"8px" }}>
-                  {attachment && (
-                    <div style={{ display:"flex", alignItems:"center", gap:"6px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:"980px", padding:"4px 12px", fontSize:"13px", color:C.mid }}>
-                      <span>{attachment.kind === "pdf" ? "📄" : attachment.kind === "image" ? "🖼️" : "📝"}</span>
-                      <span style={{ maxWidth:"200px", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{attachment.name}</span>
-                      <button onClick={() => setAttachment(null)}
-                        style={{ background:"none", border:"none", cursor:"pointer", color:C.light, fontSize:"14px", lineHeight:1, padding:"0 0 0 2px" }}>×</button>
-                    </div>
-                  )}
-                  {fileErr && <span style={{ fontSize:"12px", color:C.red }}>{fileErr}</span>}
+              {insights.length > 0 && (
+                <div className="insights-section">
+                  <div className="insights-hdr">Inzichten</div>
+                  {insights.slice(-4).map((ins, i) => (
+                    <div key={i} className={`insight-card ${ins.type}`}>{ins.text}</div>
+                  ))}
                 </div>
               )}
-              <div style={{ display:"flex", gap:"8px", alignItems:"flex-end" }}>
-                <button onClick={() => fileRef.current?.click()} disabled={loading}
-                  title="Voeg bestand toe (PDF, afbeelding of tekst)"
-                  style={{ width:"40px", height:"40px", borderRadius:"50%", border:`1px solid ${C.border}`, background:"transparent", color:C.mid, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, transition:"all 0.2s" }}>
-                  <PaperclipIcon />
-                </button>
-                <input ref={fileRef} type="file" accept={ACCEPTED} onChange={handleFileChange} style={{ display:"none" }} />
-                <textarea ref={inputRef}
-                  style={{ flex:1, padding:"10px 16px", fontSize:"15px", fontFamily:"Inter,-apple-system,sans-serif", border:`1px solid ${C.border}`, borderRadius:"12px", background:C.bg, color:interim?C.mid:C.ink, resize:"none", minHeight:"130px", maxHeight:"240px", lineHeight:1.5 }}
-                  value={input + (interim ? " " + interim : "")}
-                  onChange={e => { if (!listening) setInput(e.target.value); }}
-                  onKeyDown={handleKey}
-                  placeholder={listening ? T[lang].listeningPlaceholder : T[lang].inputPlaceholder}
-                  rows={5} disabled={loading}
-                />
-                {hasSpeech && (
-                  <button onClick={toggleMic} disabled={loading}
-                    style={{ width:"40px", height:"40px", borderRadius:"50%", border:`1px solid ${listening?C.ink:C.border}`, background:listening?C.ink:"transparent", color:listening?C.white:C.mid, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, animation:listening?"pulse 1.4s infinite":"none", transition:"all 0.2s" }}>
-                    <MicIcon on={listening} />
-                  </button>
+            </aside>
+
+            {/* Main area */}
+            <div className="agent-main">
+
+              {/* Dashboard strip */}
+              <div className="agent-dash">
+                <div className="dash-mat">
+                  <MaturityCircle score={maturity} />
+                  <span className="dash-lbl">GTM Maturity</span>
+                </div>
+                <div className="dash-radar">
+                  <RadarChart
+                    data={radarDashData}
+                    benchmark={BENCHMARK}
+                    size={150}
+                    maxScore={100}
+                    svgClass="radar-dash"
+                    showLabels={false}
+                  />
+                </div>
+                <div className="dash-legend">
+                  <div className="dl-item"><div className="dl-dot" style={{ background:"#22c55e" }} /><span>Jij</span></div>
+                  <div className="dl-item"><div className="dl-dot" style={{ background:"#f97316", opacity:0.6 }} /><span>Gemiddeld</span></div>
+                </div>
+              </div>
+
+              {/* Active section heading */}
+              {activeTopic && (
+                <div className="agent-section">
+                  <div className="sec-title">{activeTopic}</div>
+                  <div className="sec-q">{TOPIC_QUESTIONS[activeTopic]}</div>
+                </div>
+              )}
+
+              {/* Chat */}
+              <div className="agent-chat">
+
+                <div className="welcome-card">
+                  <div className="welcome-avatar">🤖</div>
+                  <div>
+                    <div className="welcome-name">Hoi! Ik ben je GTM Coach</div>
+                    <div className="welcome-sub">
+                      {companyName ? `We gaan aan de slag met: ${companyName}` : "We gaan samen jouw GTM-positie in kaart brengen."}
+                    </div>
+                  </div>
+                </div>
+
+                {messages.map((msg, i) => {
+                  if (i === 0 && msg.role === "user") return null;
+                  const attachLabel = msg.role === "user" ? getAttachmentLabel(msg) : null;
+                  const displayText = getDisplayText(msg);
+                  const isLast = i === messages.length - 1;
+                  return msg.role === "assistant" ? (
+                    <div key={i} ref={isLast ? lastMsgRef : null} className="msg-enter" style={{ alignSelf:"flex-start", maxWidth:"85%" }}>
+                      <div style={{ background:C.bg, padding:"12px 16px", borderRadius:"4px 18px 18px 18px", fontSize:"14px", lineHeight:1.65, color:C.ink }}>
+                        {fmt(displayText)}
+                      </div>
+                    </div>
+                  ) : (
+                    <div key={i} className="msg-enter" style={{ alignSelf:"flex-end", maxWidth:"75%", display:"flex", flexDirection:"column", gap:"4px", alignItems:"flex-end" }}>
+                      {attachLabel && <div style={{ fontSize:"12px", color:C.mid, background:C.bg, border:`1px solid ${C.border}`, borderRadius:"980px", padding:"3px 10px" }}>{attachLabel}</div>}
+                      {displayText && <div style={{ background:C.ink, padding:"12px 16px", borderRadius:"18px 4px 18px 18px", fontSize:"14px", lineHeight:1.65, color:C.white }}>{fmt(displayText)}</div>}
+                    </div>
+                  );
+                })}
+
+                {loading && (
+                  <div style={{ alignSelf:"flex-start" }}>
+                    <div style={{ background:C.bg, padding:"14px 18px", borderRadius:"4px 18px 18px 18px", display:"inline-flex", gap:"4px", alignItems:"center" }}>
+                      {["0s","0.2s","0.4s"].map(d => (
+                        <span key={d} style={{ width:"5px", height:"5px", borderRadius:"50%", background:C.light, display:"inline-block", animation:`bounce 1.2s ${d} infinite ease-in-out` }} />
+                      ))}
+                    </div>
+                  </div>
                 )}
-                <button onClick={sendMessage} disabled={!canSend}
-                  style={{ width:"40px", height:"40px", borderRadius:"50%", border:"none", background:canSend?C.ink:C.bg, color:canSend?C.white:C.light, cursor:canSend?"pointer":"not-allowed", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, transition:"all 0.15s" }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="12" y1="19" x2="12" y2="5" /><polyline points="5 12 12 5 19 12" />
-                  </svg>
+
+                {channels && (
+                  <div className="channels-card msg-enter">
+                    <div className="channels-hdr">Kanalen analyse</div>
+                    {channels.items.map((ch, i) => (
+                      <div key={i} className="ch-row">
+                        <span className="ch-name">{ch.name}</span>
+                        <div className="ch-track">
+                          <div className="ch-fill" style={{ width:`${Math.min(ch.score,100)}%`, background: ch.score >= 70 ? "#22c55e" : ch.score >= 40 ? "#f59e0b" : "#ef4444" }} />
+                        </div>
+                        <span className="ch-pct">{ch.score}%</span>
+                      </div>
+                    ))}
+                    {channels.note && <p style={{ fontSize:"12px", color:C.mid, marginTop:"8px", lineHeight:1.5 }}>{channels.note}</p>}
+                  </div>
+                )}
+
+                {diagram && !diagram.error && (
+                  <div className="msg-enter" style={{ background:C.white, border:`1px solid ${C.border}`, borderRadius:"16px", padding:"20px", position:"relative" }}>
+                    <button onClick={() => setDiagram(null)} style={{ position:"absolute", top:"12px", right:"14px", background:"transparent", border:"none", fontSize:"18px", color:C.light, cursor:"pointer", lineHeight:1 }}>×</button>
+                    <p style={{ fontSize:"11px", letterSpacing:"1px", textTransform:"uppercase", color:C.light, marginBottom:"16px", textAlign:"center" }}>
+                      Analyse · {diagram.bedrijf}
+                    </p>
+                    <RadarChart data={diagram.assen} />
+                    <div style={{ marginTop:"20px", display:"flex", flexDirection:"column", gap:"8px" }}>
+                      {diagram.assen.map((as, i) => (
+                        <div key={i} style={{ display:"flex", gap:"10px", alignItems:"flex-start" }}>
+                          <span style={{ fontSize:"13px", fontWeight:600, color:C.ink, minWidth:"28px" }}>{as.score}</span>
+                          <div>
+                            <span style={{ fontSize:"13px", fontWeight:500, color:C.ink }}>{as.naam}</span>
+                            <span style={{ fontSize:"13px", color:C.mid }}> - {as.toelichting}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ marginTop:"16px", textAlign:"center" }}>
+                      <button onClick={downloadDiagram} style={{ fontSize:"12px", color:C.mid, background:"transparent", border:`1px solid ${C.border}`, borderRadius:"980px", padding:"5px 14px", cursor:"pointer" }}>
+                        Download PNG
+                      </button>
+                    </div>
+                  </div>
+                )}
+                {diagram?.error && <p style={{ fontSize:"13px", color:C.mid, fontStyle:"italic" }}>{diagram.error}</p>}
+
+                <div ref={bottomRef} />
+              </div>
+
+              {/* Input */}
+              <div className="agent-input-wrap">
+                {(attachment || fileErr) && (
+                  <div style={{ marginBottom:"8px", display:"flex", alignItems:"center", gap:"8px" }}>
+                    {attachment && (
+                      <div style={{ display:"flex", alignItems:"center", gap:"6px", background:C.bg, border:`1px solid ${C.border}`, borderRadius:"980px", padding:"4px 12px", fontSize:"13px", color:C.mid }}>
+                        <span>{attachment.kind === "pdf" ? "📄" : attachment.kind === "image" ? "🖼️" : "📝"}</span>
+                        <span style={{ maxWidth:"200px", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{attachment.name}</span>
+                        <button onClick={() => setAttachment(null)} style={{ background:"none", border:"none", cursor:"pointer", color:C.light, fontSize:"14px", lineHeight:1 }}>×</button>
+                      </div>
+                    )}
+                    {fileErr && <span style={{ fontSize:"12px", color:C.red }}>{fileErr}</span>}
+                  </div>
+                )}
+                <div className="input-row">
+                  <button onClick={() => fileRef.current?.click()} disabled={loading} title="Voeg bestand toe"
+                    style={{ width:"40px", height:"40px", borderRadius:"50%", border:`1px solid ${C.border}`, background:"transparent", color:C.mid, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                    <PaperclipIcon />
+                  </button>
+                  <input ref={fileRef} type="file" accept={ACCEPTED} onChange={handleFileChange} style={{ display:"none" }} />
+                  <textarea ref={inputRef}
+                    style={{ flex:1, padding:"10px 16px", fontSize:"14px", fontFamily:"Inter,-apple-system,sans-serif", border:`1px solid ${C.border}`, borderRadius:"12px", background:C.bg, color:interim?C.mid:C.ink, resize:"none", minHeight:"44px", maxHeight:"160px", lineHeight:1.55 }}
+                    value={input + (interim ? " " + interim : "")}
+                    onChange={e => { if (!listening) setInput(e.target.value); }}
+                    onKeyDown={handleKey}
+                    placeholder={listening ? T[lang].listeningPlaceholder : T[lang].inputPlaceholder}
+                    rows={2} disabled={loading}
+                  />
+                  {hasSpeech && (
+                    <button onClick={toggleMic} disabled={loading}
+                      style={{ width:"40px", height:"40px", borderRadius:"50%", border:`1px solid ${listening?C.ink:C.border}`, background:listening?C.ink:"transparent", color:listening?C.white:C.mid, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, animation:listening?"pulse 1.4s infinite":"none" }}>
+                      <MicIcon on={listening} />
+                    </button>
+                  )}
+                  <button onClick={sendMessage} disabled={!canSend}
+                    style={{ padding:"0 20px", height:"40px", borderRadius:"980px", border:"none", background:canSend?C.ink:C.bg, color:canSend?C.white:C.light, cursor:canSend?"pointer":"not-allowed", fontSize:"14px", fontWeight:500, flexShrink:0, whiteSpace:"nowrap" }}>
+                    Stuur
+                  </button>
+                </div>
+              </div>
+
+              {/* Floating toolbar */}
+              <div className="toolbar-float">
+                <button className="tb-btn" title={genDiagram ? "Analyseren…" : "Analyseer"} onClick={generateDiagram} disabled={genDiagram || messages.length < 6}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </button>
+                <button className="tb-btn" title={summaryLoading ? "Genereren…" : "Samenvatting"} onClick={generateSummary} disabled={summaryLoading || messages.length < 2}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                </button>
+                <button className="tb-btn" title="Download gesprek" onClick={() => downloadMd(messages.slice(1), "tdme-gesprek", T[lang].downloadTitle)}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 </button>
               </div>
+
             </div>
-          </div>
-        </div>
           </div>
         </div>
       );

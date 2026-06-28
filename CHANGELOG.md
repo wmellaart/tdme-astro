@@ -1,5 +1,20 @@
 # Changelog — tdme GTM Agent
 
+## v0.9 — 28 June 2026
+
+### Added
+- Dashboard strip: maturity score circle (green ring, 0-100) + radar spider chart with two layers (own scores in green, market average in orange) - both driven entirely by model markers, never hardcoded
+- GTM Journey panel: vertical timeline with 6 topics showing done/active/waiting status and per-topic scores (0-100) from model markers
+- Tussentijdse inzichten section: insight cards (positive/attention/info) populated by new `<<TDME-INSIGHTS:...>>` marker
+- Kanalen analyse card: inline bar chart per channel populated by new `<<TDME-CHANNELS:...>>` marker
+- Extended marker format: `<<TDME:active=...;done=...;score=Topic:85,...;maturity=78>>` - score and maturity fields now parsed and shown live
+
+### Changed
+- Complete UI redesign: topbar with orange dot logo + action buttons, three-column layout (journey panel / chat / floating toolbar)
+- Chat input area simplified: compact 2-row textarea, inline paperclip + mic + Stuur button
+
+---
+
 ## v0.8.1 — 26 June 2026
 
 ### Security

@@ -36,11 +36,33 @@
     <h1>Changelog</h1>
     <p class="subtitle">All updates and improvements.</p>
 
+    <!-- v0.9 -->
+    <div class="release">
+      <div class="release-header">
+        <span class="version">v0.9</span>
+        <span class="version-badge">Current</span>
+        <span class="date">28 June 2026</span>
+      </div>
+      <p class="section-label">Added</p>
+      <ul>
+        <li><strong>Dashboard strip</strong> - maturity score circle (green ring, 0-100) and radar spider chart with two layers: own scores in green and market average in orange - both driven by model markers, never hardcoded</li>
+        <li><strong>GTM Journey panel</strong> - vertical timeline with 6 topics showing done/active/waiting status and per-topic scores (0-100) from markers</li>
+        <li><strong>Tussentijdse inzichten</strong> - insight cards (positive/attention/info) populated by new <code>TDME-INSIGHTS</code> marker</li>
+        <li><strong>Kanalen analyse card</strong> - inline bar chart per channel populated by new <code>TDME-CHANNELS</code> marker</li>
+        <li>Extended marker format: <code>score=Topic:85,...;maturity=78</code> fields now parsed and shown live</li>
+      </ul>
+      <p class="section-label">Changed</p>
+      <ul>
+        <li>Complete UI redesign: topbar with orange dot logo, three-column layout (journey panel / chat / floating toolbar)</li>
+        <li>Chat input simplified: compact textarea with inline paperclip, mic and Stuur button</li>
+      </ul>
+    </div>
+
     <!-- v0.8.1 -->
     <div class="release">
       <div class="release-header">
         <span class="version">v0.8.1</span>
-        <span class="version-badge">Current</span>
+        <span class="version-badge old">Archive</span>
         <span class="date">26 June 2026</span>
       </div>
       <p class="section-label">Security</p>
