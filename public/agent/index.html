@@ -988,6 +988,14 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
               <a href="/changelog/" target="_blank" style={{ fontSize:"11px", color:C.light, textDecoration:"none", background:C.bg, border:`1px solid ${C.border}`, borderRadius:"4px", padding:"1px 6px", marginLeft:"2px" }}>v0.9</a>
             </div>
             <div className="topbar-actions">
+              <div style={{ display:"flex", gap:"2px", background:C.bg, borderRadius:"980px", padding:"3px", marginRight:"4px" }}>
+                {["nl","en"].map(l => (
+                  <button key={l} onClick={() => setLang(l)}
+                    style={{ padding:"4px 10px", fontSize:"12px", fontWeight:500, border:"none", borderRadius:"980px", background:lang===l ? C.ink : "transparent", color:lang===l ? C.white : C.mid, cursor:"pointer", transition:"all 0.15s" }}>
+                    {l.toUpperCase()}
+                  </button>
+                ))}
+              </div>
               {messages.length >= 6 && (
                 <button onClick={generateDiagram} disabled={genDiagram}
                   style={{ fontSize:"13px", color:C.ink, background:"transparent", border:`1.5px solid ${C.ink}`, borderRadius:"980px", padding:"6px 14px", cursor:genDiagram?"default":"pointer", fontWeight:500, opacity:genDiagram?0.5:1 }}>
