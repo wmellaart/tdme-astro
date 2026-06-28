@@ -121,9 +121,12 @@
     .tb-btn:hover:not(:disabled) { border-color:#1d1d1f; color:#1d1d1f; }
     .tb-btn:disabled { opacity:0.35; cursor:default; }
 
-    /* Intake/access (legacy classes kept) */
+    .hide-topbar-sm { }
     @media (max-width:680px){
+      /* Body stacks vertically */
       .agent-body { flex-direction:column; }
+
+      /* Journey panel becomes horizontal icon strip */
       .journey-panel { width:auto; flex:0 0 auto; border-right:none; border-bottom:1px solid #e5e5ea; }
       .journey-scroll { overflow-x:auto; overflow-y:hidden; padding:10px 12px; }
       .journey-hdr, .insights-section { display:none; }
@@ -133,9 +136,20 @@
       .j-meta { padding-top:0; }
       .j-name { font-size:11px; }
       .j-status { display:none; }
+
+      /* Dashboard: compact */
       .agent-dash { gap:10px; padding:10px 14px; }
       .dash-legend { display:none; }
-      .toolbar-float { display:none; }
+
+      /* Topbar: hide non-essential items */
+      .hide-topbar-sm { display:none; }
+      .logo-sub { display:none; }
+      .agent-topbar { overflow:hidden; }
+
+      /* Floating toolbar: reflow below input as horizontal action row */
+      .toolbar-float { position:static; transform:none; flex-direction:row; justify-content:flex-end; border-top:1px solid #e5e5ea; padding:6px 14px; gap:8px; background:#fff; }
+
+      /* Chat + input */
       .agent-chat { padding:14px; }
       .agent-input-wrap { padding:8px 14px; }
     }
@@ -497,7 +511,20 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
       const [current,  setCurrent]  = useState(0);
       const [answers,  setAnswers]  = useState({});
       const [animKey,  setAnimKey]  = useState(0);
-      const textareaRef = useRef(null);
+      const textareaRef  = useRef(null);
+      const containerRef = useRef(null);
+
+      useEffect(() => {
+        const vv = window.visualViewport;
+        if (!vv) return;
+        const update = () => {
+          if (containerRef.current) containerRef.current.style.height = vv.height + "px";
+        };
+        update();
+        vv.addEventListener("resize", update);
+        vv.addEventListener("scroll", update);
+        return () => { vv.removeEventListener("resize", update); vv.removeEventListener("scroll", update); };
+      }, []);
 
       const questions = getIntakeQuestions(lang);
       const t   = T[lang];
@@ -535,7 +562,7 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
       });
 
       return (
-        <div style={{ height:"100dvh", display:"flex", flexDirection:"column", background:C.white, overflow:"hidden" }}>
+        <div ref={containerRef} style={{ height:"100dvh", display:"flex", flexDirection:"column", background:C.white, overflow:"hidden" }}>
           <div style={{ padding:"16px 24px", borderBottom:`1px solid ${C.border}`, flexShrink:0 }}>
             <div style={{ maxWidth:"560px", margin:"0 auto" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"10px" }}>
@@ -997,7 +1024,7 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
               <div className="logo-dot" />
               <span className="logo-name">tdme</span>
               <span className="logo-sub">GTM Agent</span>
-              <a href="/changelog/" target="_blank" style={{ fontSize:"11px", color:C.light, textDecoration:"none", background:C.bg, border:`1px solid ${C.border}`, borderRadius:"4px", padding:"1px 6px", marginLeft:"2px" }}>v0.9</a>
+              <a href="/changelog/" target="_blank" className="hide-topbar-sm" style={{ fontSize:"11px", color:C.light, textDecoration:"none", background:C.bg, border:`1px solid ${C.border}`, borderRadius:"4px", padding:"1px 6px", marginLeft:"2px" }}>v0.9</a>
             </div>
             <div className="topbar-actions">
               <div style={{ display:"flex", gap:"2px", background:C.bg, borderRadius:"980px", padding:"3px", marginRight:"4px" }}>
@@ -1009,16 +1036,16 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
                 ))}
               </div>
               {messages.length >= 6 && (
-                <button onClick={generateDiagram} disabled={genDiagram}
+                <button className="hide-topbar-sm" onClick={generateDiagram} disabled={genDiagram}
                   style={{ fontSize:"13px", color:C.ink, background:"transparent", border:`1.5px solid ${C.ink}`, borderRadius:"980px", padding:"6px 14px", cursor:genDiagram?"default":"pointer", fontWeight:500, opacity:genDiagram?0.5:1 }}>
                   {genDiagram ? T[lang].analysingBtn : T[lang].analyseBtn}
                 </button>
               )}
-              <button onClick={generateSummary} disabled={summaryLoading || messages.length < 2}
+              <button className="hide-topbar-sm" onClick={generateSummary} disabled={summaryLoading || messages.length < 2}
                 style={{ fontSize:"13px", color:(summaryLoading||messages.length<2)?C.light:C.mid, background:"transparent", border:`1px solid ${C.border}`, borderRadius:"980px", padding:"6px 14px", cursor:(summaryLoading||messages.length<2)?"default":"pointer" }}>
                 {summaryLoading ? T[lang].summaryLoading : T[lang].summaryBtn}
               </button>
-              <button onClick={() => downloadMd(messages.slice(1), "tdme-gesprek", T[lang].downloadTitle)}
+              <button className="hide-topbar-sm" onClick={() => downloadMd(messages.slice(1), "tdme-gesprek", T[lang].downloadTitle)}
                 style={{ fontSize:"13px", color:C.white, background:C.ink, border:"none", borderRadius:"980px", padding:"6px 16px", cursor:"pointer", fontWeight:500 }}>
                 {T[lang].downloadBtn}
               </button>
