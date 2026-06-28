@@ -180,6 +180,20 @@
         summaryPrompt: `Maak op basis van dit gesprek een gestructureerde samenvatting met:\n\n1. Bedrijfsprofiel (kern in 3-5 bullets)\n2. Kernvraagstuk en context\n3. Belangrijkste inzichten uit het gesprek\n4. Concrete aanbevelingen (top 3-5, op prioriteit)\n5. Aanbevolen vervolgstappen\n\nHoud het beknopt, eerlijk en bruikbaar - zowel voor intern gebruik als voor de founder.`,
         downloadTitle: "tdme GTM Agent - gesprek",
         downloadSummaryTitle: "tdme GTM Agent - samenvatting",
+        analyseBtn: "Analyseer",
+        analysingBtn: "Analyseren…",
+        stuurBtn: "Stuur",
+        addFileTitle: "Voeg bestand toe",
+        welcomeName: "Hoi! Ik ben je GTM Coach",
+        welcomeSubWith: "We gaan aan de slag met:",
+        welcomeSub: "We gaan samen jouw GTM-positie in kaart brengen.",
+        journeyWaiting: "Wachtend",
+        journeyDone: "Afgerond",
+        insightsHdr: "Inzichten",
+        dashYou: "Jij",
+        dashAverage: "Gemiddeld",
+        channelsHdr: "Kanalen analyse",
+        analyseLabel: "Analyse",
       },
       en: {
         headline: "Let's get started",
@@ -201,6 +215,20 @@
         summaryPrompt: `Based on this conversation, create a structured summary with:\n\n1. Company profile (key points in 3-5 bullets)\n2. Core challenge and context\n3. Key insights from the conversation\n4. Concrete recommendations (top 3-5, by priority)\n5. Recommended next steps\n\nKeep it concise, honest and actionable - useful for both internal use and the founder.`,
         downloadTitle: "tdme GTM Agent - conversation",
         downloadSummaryTitle: "tdme GTM Agent - summary",
+        analyseBtn: "Analyse",
+        analysingBtn: "Analysing…",
+        stuurBtn: "Send",
+        addFileTitle: "Add file",
+        welcomeName: "Hi! I'm your GTM Coach",
+        welcomeSubWith: "Let's get started with:",
+        welcomeSub: "Let's map out your GTM position together.",
+        journeyWaiting: "Waiting",
+        journeyDone: "Done",
+        insightsHdr: "Insights",
+        dashYou: "You",
+        dashAverage: "Average",
+        channelsHdr: "Channel analysis",
+        analyseLabel: "Analysis",
       },
     };
 
@@ -351,12 +379,22 @@
     };
 
     const TOPIC_QUESTIONS = {
-      "Propositie":      "Wat is jullie kernbelofte, en voor wie los je welk probleem op?",
-      "GTM-gereedheid":  "Hoe bereik je vandaag je eerste klanten, en wat werkt al herhaalbaar?",
-      "Doelgroepfocus":  "Wie is jullie ideale klant, en hoe concreet kun je die omschrijven?",
-      "Merkidentiteit":  "Hoe willen jullie overkomen bij klanten, en wat maakt jullie herkenbaar?",
-      "Sales-alignment": "Hoe sluit jullie verhaal aan op hoe jullie het in de praktijk verkopen?",
-      "Schaalbaarheid":  "Wat zijn de bottlenecks als jullie morgen 10x meer klanten zouden hebben?",
+      nl: {
+        "Propositie":      "Wat is jullie kernbelofte, en voor wie los je welk probleem op?",
+        "GTM-gereedheid":  "Hoe bereik je vandaag je eerste klanten, en wat werkt al herhaalbaar?",
+        "Doelgroepfocus":  "Wie is jullie ideale klant, en hoe concreet kun je die omschrijven?",
+        "Merkidentiteit":  "Hoe willen jullie overkomen bij klanten, en wat maakt jullie herkenbaar?",
+        "Sales-alignment": "Hoe sluit jullie verhaal aan op hoe jullie het in de praktijk verkopen?",
+        "Schaalbaarheid":  "Wat zijn de bottlenecks als jullie morgen 10x meer klanten zouden hebben?",
+      },
+      en: {
+        "Propositie":      "What is your core promise, and which problem do you solve for whom?",
+        "GTM-gereedheid":  "How do you reach your first customers today, and what is already repeatable?",
+        "Doelgroepfocus":  "Who is your ideal customer, and how concretely can you describe them?",
+        "Merkidentiteit":  "How do you want to come across to customers, and what makes you recognisable?",
+        "Sales-alignment": "How does your story align with how you actually sell in practice?",
+        "Schaalbaarheid":  "What are the bottlenecks if you had 10x more customers tomorrow?",
+      },
     };
 
     // ─── DIAGRAM ──────────────────────────────────────────────────────────────
@@ -953,7 +991,7 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
               {messages.length >= 6 && (
                 <button onClick={generateDiagram} disabled={genDiagram}
                   style={{ fontSize:"13px", color:C.ink, background:"transparent", border:`1.5px solid ${C.ink}`, borderRadius:"980px", padding:"6px 14px", cursor:genDiagram?"default":"pointer", fontWeight:500, opacity:genDiagram?0.5:1 }}>
-                  {genDiagram ? "Analyseren…" : "Analyseer"}
+                  {genDiagram ? T[lang].analysingBtn : T[lang].analyseBtn}
                 </button>
               )}
               <button onClick={generateSummary} disabled={summaryLoading || messages.length < 2}
@@ -987,13 +1025,13 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
                           <div className={`j-name${status === "wachtend" ? " dim" : ""}`}>{t}</div>
                           <div className="j-status">
                             {status === "done" && (
-                              <span className="j-score">{score != null ? `${score}/100` : "Afgerond"}</span>
+                              <span className="j-score">{score != null ? `${score}/100` : T[lang].journeyDone}</span>
                             )}
                             {status === "active" && (
                               <span style={{ color:"#0891b2", fontWeight:500 }}>In progress</span>
                             )}
                             {status === "wachtend" && (
-                              <span style={{ color:C.light }}>Wachtend</span>
+                              <span style={{ color:C.light }}>{T[lang].journeyWaiting}</span>
                             )}
                           </div>
                         </div>
@@ -1004,7 +1042,7 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
               </div>
               {insights.length > 0 && (
                 <div className="insights-section">
-                  <div className="insights-hdr">Inzichten</div>
+                  <div className="insights-hdr">{T[lang].insightsHdr}</div>
                   {insights.slice(-4).map((ins, i) => (
                     <div key={i} className={`insight-card ${ins.type}`}>{ins.text}</div>
                   ))}
@@ -1032,8 +1070,8 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
                   />
                 </div>
                 <div className="dash-legend">
-                  <div className="dl-item"><div className="dl-dot" style={{ background:"#22c55e" }} /><span>Jij</span></div>
-                  <div className="dl-item"><div className="dl-dot" style={{ background:"#f97316", opacity:0.6 }} /><span>Gemiddeld</span></div>
+                  <div className="dl-item"><div className="dl-dot" style={{ background:"#22c55e" }} /><span>{T[lang].dashYou}</span></div>
+                  <div className="dl-item"><div className="dl-dot" style={{ background:"#f97316", opacity:0.6 }} /><span>{T[lang].dashAverage}</span></div>
                 </div>
               </div>
 
@@ -1041,7 +1079,7 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
               {activeTopic && (
                 <div className="agent-section">
                   <div className="sec-title">{activeTopic}</div>
-                  <div className="sec-q">{TOPIC_QUESTIONS[activeTopic]}</div>
+                  <div className="sec-q">{TOPIC_QUESTIONS[lang][activeTopic]}</div>
                 </div>
               )}
 
@@ -1051,9 +1089,9 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
                 <div className="welcome-card">
                   <div className="welcome-avatar">🤖</div>
                   <div>
-                    <div className="welcome-name">Hoi! Ik ben je GTM Coach</div>
+                    <div className="welcome-name">{T[lang].welcomeName}</div>
                     <div className="welcome-sub">
-                      {companyName ? `We gaan aan de slag met: ${companyName}` : "We gaan samen jouw GTM-positie in kaart brengen."}
+                      {companyName ? `${T[lang].welcomeSubWith} ${companyName}` : T[lang].welcomeSub}
                     </div>
                   </div>
                 </div>
@@ -1089,7 +1127,7 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
 
                 {channels && (
                   <div className="channels-card msg-enter">
-                    <div className="channels-hdr">Kanalen analyse</div>
+                    <div className="channels-hdr">{T[lang].channelsHdr}</div>
                     {channels.items.map((ch, i) => (
                       <div key={i} className="ch-row">
                         <span className="ch-name">{ch.name}</span>
@@ -1107,7 +1145,7 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
                   <div className="msg-enter" style={{ background:C.white, border:`1px solid ${C.border}`, borderRadius:"16px", padding:"20px", position:"relative" }}>
                     <button onClick={() => setDiagram(null)} style={{ position:"absolute", top:"12px", right:"14px", background:"transparent", border:"none", fontSize:"18px", color:C.light, cursor:"pointer", lineHeight:1 }}>×</button>
                     <p style={{ fontSize:"11px", letterSpacing:"1px", textTransform:"uppercase", color:C.light, marginBottom:"16px", textAlign:"center" }}>
-                      Analyse · {diagram.bedrijf}
+                      {T[lang].analyseLabel} · {diagram.bedrijf}
                     </p>
                     <RadarChart data={diagram.assen} />
                     <div style={{ marginTop:"20px", display:"flex", flexDirection:"column", gap:"8px" }}>
@@ -1148,7 +1186,7 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
                   </div>
                 )}
                 <div className="input-row">
-                  <button onClick={() => fileRef.current?.click()} disabled={loading} title="Voeg bestand toe"
+                  <button onClick={() => fileRef.current?.click()} disabled={loading} title={T[lang].addFileTitle}
                     style={{ width:"40px", height:"40px", borderRadius:"50%", border:`1px solid ${C.border}`, background:"transparent", color:C.mid, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                     <PaperclipIcon />
                   </button>
@@ -1169,14 +1207,14 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
                   )}
                   <button onClick={sendMessage} disabled={!canSend}
                     style={{ padding:"0 20px", height:"40px", borderRadius:"980px", border:"none", background:canSend?C.ink:C.bg, color:canSend?C.white:C.light, cursor:canSend?"pointer":"not-allowed", fontSize:"14px", fontWeight:500, flexShrink:0, whiteSpace:"nowrap" }}>
-                    Stuur
+                    {T[lang].stuurBtn}
                   </button>
                 </div>
               </div>
 
               {/* Floating toolbar */}
               <div className="toolbar-float">
-                <button className="tb-btn" title={genDiagram ? "Analyseren…" : "Analyseer"} onClick={generateDiagram} disabled={genDiagram || messages.length < 6}>
+                <button className="tb-btn" title={genDiagram ? T[lang].analysingBtn : T[lang].analyseBtn} onClick={generateDiagram} disabled={genDiagram || messages.length < 6}>
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                 </button>
                 <button className="tb-btn" title={summaryLoading ? "Genereren…" : "Samenvatting"} onClick={generateSummary} disabled={summaryLoading || messages.length < 2}>
