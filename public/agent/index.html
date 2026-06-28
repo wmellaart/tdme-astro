@@ -245,7 +245,7 @@
     ];
 
     const buildIntakeMessage = (answers, lang) => {
-      const g = (k) => answers[k] || "—";
+      const g = (k) => answers[k] || "-";
       const langNote = lang === "en"
         ? "The user has selected English as their preferred language. Conduct the entire conversation in English from start to finish.\n\n"
         : "De gebruiker heeft Nederlands gekozen als voorkeurstaal. Voer het hele gesprek in het Nederlands.\n\n";
@@ -431,7 +431,7 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
             />
           )}
           <text x={cx} y={cy - 3} textAnchor="middle" fontSize="18" fontWeight="700" fill="#1d1d1f" fontFamily="Inter,sans-serif">
-            {score != null ? score : "—"}
+            {score != null ? score : "-"}
           </text>
           <text x={cx} y={cy + 13} textAnchor="middle" fontSize="9" fill="#aeaeb2" fontFamily="Inter,sans-serif">/100</text>
         </svg>

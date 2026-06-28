@@ -127,7 +127,7 @@
         const lines = (convo.messages || []).map(m =>
           `**${m.role === "assistant" ? "Agent" : "Founder"}:** ${getDisplayText(m)}`
         ).join("\n\n");
-        const blob = new Blob([`# tdme Gesprek — ${date}\n\n---\n\n${lines}`], { type: "text/markdown;charset=utf-8" });
+        const blob = new Blob([`# tdme Gesprek - ${date}\n\n---\n\n${lines}`], { type: "text/markdown;charset=utf-8" });
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob); a.download = `tdme-gesprek-${date}.md`; a.click();
       };
@@ -177,7 +177,7 @@
                     <span style={{ fontSize:"13px", fontWeight:600, color:C.ink, minWidth:"28px" }}>{as.score}</span>
                     <div>
                       <span style={{ fontSize:"13px", fontWeight:500, color:C.ink }}>{as.naam}</span>
-                      <span style={{ fontSize:"13px", color:C.mid }}> — {as.toelichting}</span>
+                      <span style={{ fontSize:"13px", color:C.mid }}> - {as.toelichting}</span>
                     </div>
                   </div>
                 ))}
@@ -215,14 +215,14 @@
 
     // ── KENNISEXTRACTIE TAB ───────────────────────────────────────────────────
 
-    const KENNIS_SYSTEM = `Je bent een kennisextractie-interviewer. Je taak is om de marketing expertise van Frank Schuyer en Wouter Mellaart systematisch vast te leggen, zodat die gebruikt kan worden als kennisbasis voor de tdme GTM Agent — een AI-assistent die start-ups en scale-ups adviseert op het gebied van go-to-market strategie, positionering, B2B marketing en branding.
+    const KENNIS_SYSTEM = `Je bent een kennisextractie-interviewer. Je taak is om de marketing expertise van Frank Schuyer en Wouter Mellaart systematisch vast te leggen, zodat die gebruikt kan worden als kennisbasis voor de tdme GTM Agent - een AI-assistent die start-ups en scale-ups adviseert op het gebied van go-to-market strategie, positionering, B2B marketing en branding.
 
-Je voert een diepgaand, conversationeel interview. Je doel is om concrete, specifieke en bruikbare inzichten te verzamelen — geen abstracte algemeenheden.
+Je voert een diepgaand, conversationeel interview. Je doel is om concrete, specifieke en bruikbare inzichten te verzamelen - geen abstracte algemeenheden.
 
 Gespreksonderwerpen (werk ze organisch af, forceer geen volgorde):
 1. De frameworks en aanpakken die de persoon structureel gebruikt bij marketing- en groeivraagstukken
 2. De meest voorkomende fouten of blinde vlekken die hij ziet bij founders van start-ups en scale-ups
-3. Hoe hij go-to-market strategie aanpakt — stappen, valkuilen, succesfactoren
+3. Hoe hij go-to-market strategie aanpakt - stappen, valkuilen, succesfactoren
 4. Zijn aanpak voor positionering en propositie-ontwikkeling
 5. Inzichten over B2B marketing & sales (alignment, pipeline, kanalen)
 6. Wat hij ziet werken in digitale marketing en groei voor vroeg-stadium bedrijven
@@ -230,8 +230,8 @@ Gespreksonderwerpen (werk ze organisch af, forceer geen volgorde):
 
 Instructies:
 - Stel ALTIJD maar één vraag tegelijk
-- Vraag door als een antwoord interessant of concreet is — ga de diepte in
-- Vermijd algemeenheden — vraag altijd om een voorbeeld, een case, of een vuistregel
+- Vraag door als een antwoord interessant of concreet is - ga de diepte in
+- Vermijd algemeenheden - vraag altijd om een voorbeeld, een case, of een vuistregel
 - Spreek de persoon aan op zijn voornaam
 - Na 12-15 uitwisselingen, of als de persoon aangeeft klaar te zijn, bied je aan om de inzichten samen te vatten
 - Schrijf altijd in het Nederlands
@@ -354,7 +354,7 @@ Wees specifiek en concreet. Dit wordt direct gebruikt als kennisbasis voor een A
       const downloadMd = () => {
         const date = new Date().toISOString().slice(0, 10);
         const slug = fullName.toLowerCase().replace(/\s+/g, "-");
-        const blob = new Blob([`# tdme Input — ${fullName}\n_${date}_\n\n---\n\n` + summary], { type:"text/markdown;charset=utf-8" });
+        const blob = new Blob([`# tdme Input - ${fullName}\n_${date}_\n\n---\n\n` + summary], { type:"text/markdown;charset=utf-8" });
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob); a.download = `tdme-input-${slug}-${date}.md`; a.click();
       };
