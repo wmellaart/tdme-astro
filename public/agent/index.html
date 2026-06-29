@@ -126,20 +126,23 @@
       /* Body stacks vertically */
       .agent-body { flex-direction:column; }
 
-      /* Journey panel becomes horizontal icon strip */
+      /* Journey panel: compact icon-only strip (labels hidden, icons smaller) */
       .journey-panel { width:auto; flex:0 0 auto; border-right:none; border-bottom:1px solid #e5e5ea; }
-      .journey-scroll { overflow-x:auto; overflow-y:hidden; padding:10px 12px; }
+      .journey-scroll { overflow-x:auto; overflow-y:hidden; padding:8px 12px; }
       .journey-hdr, .insights-section { display:none; }
-      .journey-list { flex-direction:row; gap:6px; }
+      .journey-list { flex-direction:row; gap:4px; }
       .journey-list::before { display:none; }
-      .journey-item { flex-direction:column; align-items:center; min-width:60px; padding:6px 4px; text-align:center; }
-      .j-meta { padding-top:0; }
-      .j-name { font-size:11px; }
-      .j-status { display:none; }
+      .journey-item { flex-direction:column; align-items:center; min-width:40px; padding:4px; text-align:center; }
+      .j-meta { display:none; }
+      .j-icon { width:32px; height:32px; font-size:14px; }
 
-      /* Dashboard: compact */
-      .agent-dash { gap:10px; padding:10px 14px; }
-      .dash-legend { display:none; }
+      /* Dashboard: hidden on mobile (no data at start, reclaims space) */
+      .agent-dash { display:none; }
+
+      /* Section heading: tighter */
+      .agent-section { padding:8px 16px; }
+      .sec-title { font-size:15px; }
+      .sec-q { font-size:12px; }
 
       /* Topbar: hide non-essential items */
       .hide-topbar-sm { display:none; }
@@ -147,11 +150,12 @@
       .agent-topbar { overflow:hidden; }
 
       /* Floating toolbar: reflow below input as horizontal action row */
-      .toolbar-float { position:static; transform:none; flex-direction:row; justify-content:flex-end; border-top:1px solid #e5e5ea; padding:6px 14px; gap:8px; background:#fff; }
+      .toolbar-float { position:static; transform:none; flex-direction:row; justify-content:flex-end; border-top:1px solid #e5e5ea; padding:6px 12px; gap:8px; background:#fff; }
+      .tb-btn { width:32px; height:32px; }
 
       /* Chat + input */
-      .agent-chat { padding:14px; }
-      .agent-input-wrap { padding:8px 14px; }
+      .agent-chat { padding:12px 14px; }
+      .agent-input-wrap { padding:8px 12px; }
     }
   </style>
 </head>
