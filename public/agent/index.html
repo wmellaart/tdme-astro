@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>tdme · GTM Agent</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="icon" href="/favicon.ico" />
@@ -10,8 +10,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body, #root { height: 100%; overflow-x: hidden; }
-    body { background: #fff; font-family: 'Inter', -apple-system, sans-serif; color: #1d1d1f; -webkit-font-smoothing: antialiased; }
+    html, body, #root { height: 100%; }
+    body { background: #fff; font-family: 'Inter', -apple-system, sans-serif; color: #1d1d1f; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 
     @keyframes bounce {
       0%, 80%, 100% { transform: translateY(0); }
@@ -45,7 +45,7 @@
     .agent-app     { display:flex; flex-direction:column; height:100dvh; overflow:hidden; }
 
     /* Topbar */
-    .agent-topbar  { display:flex; align-items:center; justify-content:space-between; padding:0 20px; height:52px; border-bottom:1px solid #e5e5ea; flex-shrink:0; background:#fff; z-index:20; }
+    .agent-topbar  { display:flex; align-items:center; justify-content:space-between; padding:0 20px; padding-top:env(safe-area-inset-top,0px); height:calc(52px + env(safe-area-inset-top,0px)); border-bottom:1px solid #e5e5ea; flex-shrink:0; background:#fff; z-index:20; }
     .logo-wrap     { display:flex; align-items:center; gap:8px; }
     .logo-dot      { width:9px; height:9px; border-radius:50%; background:#f97316; flex-shrink:0; }
     .logo-name     { font-size:15px; font-weight:600; color:#1d1d1f; }
@@ -567,7 +567,7 @@ Geef je antwoord ALLEEN als geldig JSON zonder extra tekst of markdown:
 
       return (
         <div ref={containerRef} style={{ height:"100dvh", display:"flex", flexDirection:"column", background:C.white, overflow:"hidden" }}>
-          <div style={{ padding:"16px 24px", borderBottom:`1px solid ${C.border}`, flexShrink:0 }}>
+          <div style={{ padding:"16px 24px", paddingTop:"calc(env(safe-area-inset-top,0px) + 14px)", borderBottom:`1px solid ${C.border}`, flexShrink:0 }}>
             <div style={{ maxWidth:"560px", margin:"0 auto" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"10px" }}>
                 <span style={{ fontSize:"12px", letterSpacing:"1px", color:C.light, fontWeight:500 }}>tdme · GTM Agent</span>
