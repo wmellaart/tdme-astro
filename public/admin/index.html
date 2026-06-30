@@ -133,8 +133,8 @@
               <div key={key} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 16px", borderBottom: i < days.length-1 ? `1px solid ${C.border}` : "none", background: i === 0 ? C.bg : C.white }}>
                 <span style={{ fontSize:"14px", color:C.ink, fontWeight: i === 0 ? 500 : 400 }}>{fmtDay(key)}</span>
                 <div style={{ display:"flex", alignItems:"center", gap:"10px" }}>
-                  {s.NL > 0 && <span style={{ fontSize:"12px", color:C.mid, background:"#f0f9ff", border:`1px solid #bae6fd`, borderRadius:"980px", padding:"1px 8px" }}>{s.NL} NL</span>}
-                  {s.EN > 0 && <span style={{ fontSize:"12px", color:C.mid, background:"#f0fdf4", border:`1px solid #bbf7d0`, borderRadius:"980px", padding:"1px 8px" }}>{s.EN} EN</span>}
+                  {s.other === 0 && s.NL > 0 && <span style={{ fontSize:"12px", color:C.mid, background:"#f0f9ff", border:`1px solid #bae6fd`, borderRadius:"980px", padding:"1px 8px" }}>{s.NL} NL</span>}
+                  {s.other === 0 && s.EN > 0 && <span style={{ fontSize:"12px", color:C.mid, background:"#f0fdf4", border:`1px solid #bbf7d0`, borderRadius:"980px", padding:"1px 8px" }}>{s.EN} EN</span>}
                   <span style={{ fontSize:"14px", fontWeight:600, color:C.ink, minWidth:"20px", textAlign:"right" }}>{total}</span>
                 </div>
               </div>
