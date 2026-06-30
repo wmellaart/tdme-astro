@@ -98,6 +98,57 @@
       </svg>
     );
 
+    // ── HELPERS ──────────────────────────────────────────────────────────────
+
+    const detectLang = (preview) => {
+      if (!preview) return null;
+      if (/Nederlands/i.test(preview) || preview.startsWith("De gebruiker")) return "NL";
+      if (/English/i.test(preview) || preview.startsWith("The user")) return "EN";
+      return null;
+    };
+
+    function DagSamenvatting({ convos }) {
+      const byDay = {};
+      convos.forEach(c => {
+        const key = new Date(c.timestamp).toISOString().slice(0, 10);
+        const lang = detectLang(c.preview);
+        if (!byDay[key]) byDay[key] = { NL:0, EN:0, other:0, date: new Date(c.timestamp) };
+        if (lang === "NL") byDay[key].NL++;
+        else if (lang === "EN") byDay[key].EN++;
+        else byDay[key].other++;
+      });
+
+      const days = Object.entries(byDay).sort((a, b) => b[0].localeCompare(a[0]));
+
+      const fmtDay = (key) => {
+        const d = new Date(key + "T12:00:00");
+        const todayKey = new Date().toISOString().slice(0, 10);
+        const yKey = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+        if (key === todayKey) return "Vandaag";
+        if (key === yKey) return "Gisteren";
+        return d.toLocaleDateString("nl-NL", { weekday:"long", day:"numeric", month:"long" });
+      };
+
+      return (
+        <div style={{ marginBottom:"24px", border:`1px solid ${C.border}`, borderRadius:"14px", overflow:"hidden" }}>
+          {days.map(([key, s], i) => {
+            const total = s.NL + s.EN + s.other;
+            return (
+              <div key={key} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 16px", borderBottom: i < days.length-1 ? `1px solid ${C.border}` : "none", background: i === 0 ? C.bg : C.white }}>
+                <span style={{ fontSize:"14px", color:C.ink, fontWeight: i === 0 ? 500 : 400 }}>{fmtDay(key)}</span>
+                <div style={{ display:"flex", alignItems:"center", gap:"10px" }}>
+                  {s.NL > 0 && <span style={{ fontSize:"12px", color:C.mid, background:"#f0f9ff", border:`1px solid #bae6fd`, borderRadius:"980px", padding:"1px 8px" }}>{s.NL} NL</span>}
+                  {s.EN > 0 && <span style={{ fontSize:"12px", color:C.mid, background:"#f0fdf4", border:`1px solid #bbf7d0`, borderRadius:"980px", padding:"1px 8px" }}>{s.EN} EN</span>}
+                  {s.other > 0 && <span style={{ fontSize:"12px", color:C.light }}>{s.other} ?</span>}
+                  <span style={{ fontSize:"14px", fontWeight:600, color:C.ink, minWidth:"20px", textAlign:"right" }}>{total}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+
     // ── GESPREKKEN TAB ───────────────────────────────────────────────────────
 
     function Gesprekken({ adminKey }) {
@@ -192,6 +243,7 @@
           <h2 style={{ fontSize:"22px", fontWeight:600, letterSpacing:"-0.5px", marginBottom:"20px" }}>
             {convos.length} gesprek{convos.length !== 1 ? "ken" : ""}
           </h2>
+          {convos.length > 0 && <DagSamenvatting convos={convos} />}
           {convos.length === 0 ? (
             <p style={{ color:C.mid, fontSize:"15px" }}>Nog geen gesprekken opgeslagen.</p>
           ) : (
