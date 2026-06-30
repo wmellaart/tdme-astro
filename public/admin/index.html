@@ -122,10 +122,6 @@
 
       const fmtDay = (key) => {
         const d = new Date(key + "T12:00:00");
-        const todayKey = new Date().toISOString().slice(0, 10);
-        const yKey = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
-        if (key === todayKey) return "Vandaag";
-        if (key === yKey) return "Gisteren";
         return d.toLocaleDateString("nl-NL", { weekday:"long", day:"numeric", month:"long" });
       };
 
